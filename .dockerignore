@@ -6,6 +6,8 @@ __pycache__/
 env/
 .venv/
 .pytest_cache/
+db_dump/
+mosquitto/
 
 # ignore files
 *.pyc
