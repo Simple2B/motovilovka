@@ -1,0 +1,12 @@
+# ignore directories
+__pycache__/
+env/
+.venv/
+.pytest_cache/
+.db_dump/*
+
+# ignore files
+.env
+*.pyc
+/*.sqlite3
+debug.json
