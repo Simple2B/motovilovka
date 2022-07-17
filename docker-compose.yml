@@ -1,7 +1,6 @@
 version: '3'
 
 services:
-
   # db:
   #   image: postgres:13
   #   restart: always
@@ -51,23 +50,21 @@ services:
   #     - REDIS_PASSWORD=${REDIS_PASSWORD}
   #   command: >
   #     --requirepass ${REDIS_PASSWORD}
-    
   mqtt:
     restart: always
-    image: eclipse-mosquitto
+    image: simple2b/motovilovka_mqtt_broker
     ports:
       - 127.0.0.1:1883:1883
       - 127.0.0.1:9001:9001
     volumes:
-      - ./mosquitto/config:/mosquitto/config
-      - ./mosquitto/data:/mosquitto/data
-      - ./mosquitto/log:/mosquitto/log
+      - mosquitto:/mosquitto/config
+      - mosquitto:/mosquitto/data
+    environment:
+      MOSQUITTO_ADMIN_USER: ${MOSQUITTO_ADMIN_USER}
+      MOSQUITO_ADMIN_PASSWORD: ${MOSQUITO_ADMIN_PASSWORD}
 
-
-# volumes:
-#   mosquitto/config:
-#   mosquitto/data:
-#   mosquitto/log:
+volumes:
+  mosquitto:
   # db-data:
   # db_dump:
 
