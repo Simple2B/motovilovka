@@ -5,6 +5,7 @@ from flask_jwt_extended import JWTManager
 from flask_openapi3 import OpenAPI
 from flask_openapi3.models import Info
 from flask_openapi3.models.security import HTTPBearer
+from app.services import mqtt_service
 
 
 db = SQLAlchemy()
@@ -45,5 +46,8 @@ def create_app(environment="development"):
     def user_lookup_callback(_jwt_header, jwt_data):
         identity = jwt_data["sub"]
         return User.query.filter_by(id=identity).one_or_none()
+
+    # create admin
+    mqtt_service.set_admin()
 
     return app

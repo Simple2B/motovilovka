@@ -5,6 +5,8 @@ from pathlib import Path
 from dotenv import load_dotenv
 from app import create_app, db, models
 from backup import restore_from_backup, BACKUP_FILENAME_POSTFIX
+from app.services import user_service
+
 
 INIT_DB_CMD = (
     "poetry run flask db init",
@@ -61,6 +63,22 @@ def create_db():
 def drop_db():
     """Drop the current database."""
     db.drop_all()
+
+
+@app.cli.command()
+def create_user():
+    """Create user command"""
+    # import sys
+    username = input("username: ")
+    password = input("password: ")
+    user_service.create_user(username, password)
+
+
+@app.cli.command()
+def remove_user():
+    """Remove user"""
+    username = input("Username: ")
+    user_service.remove_user(username)
 
 
 if __name__ == "__main__":
