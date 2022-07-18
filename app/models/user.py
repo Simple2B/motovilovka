@@ -5,7 +5,6 @@ from sqlalchemy import Enum
 from flask_login import UserMixin, AnonymousUserMixin
 from sqlalchemy import func
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy.orm import relationship
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from app import db
