@@ -1,22 +1,7 @@
 #!/user/bin/env python
-import os
 import click
-from pathlib import Path
-from dotenv import load_dotenv
 from app import create_app, db, models
-from backup import restore_from_backup, BACKUP_FILENAME_POSTFIX
-from app.services import user_service
 
-
-INIT_DB_CMD = (
-    "poetry run flask db init",
-    "poetry run flask db migrate",
-    "poetry run flask db upgrade"
-)
-
-BACKUP_DIR = os.environ.get("BACKUP_DIR")
-
-load_dotenv()
 
 app = create_app()
 
@@ -25,37 +10,17 @@ app = create_app()
 @app.shell_context_processor
 def get_context():
     """Objects exposed here will be automatically available from the shell."""
-    return dict(app=app, db=db, models=models)
+    return dict(app=app, db=db, m=models)
 
 
 @app.cli.command()
-def restore_db_from_backup(backup_number=1):
+@click.option("--test-data/--no-test-data", default=False)
+def init_db(test_data: bool = False):
+    """Init database."""
+    from app.controllers import init_db
 
-    try:
-        backup_number = int(backup_number)
-    except ValueError:
-        return
-
-    all_backups = [f for f in os.listdir(BACKUP_DIR) if (Path(BACKUP_DIR) / f).is_file()]
-    all_timestamps = []
-
-    for backup in all_backups:
-        backup_timestamp = backup.split(BACKUP_FILENAME_POSTFIX)[0]
-        try:
-            backup_timestamp = float(backup_timestamp)
-            all_timestamps.append(backup_timestamp)
-        except ValueError:
-            continue
-
-    all_timestamps.sort()
-    restore_from_backup(all_timestamps[backup_number - 1])
-
-
-@app.cli.command()
-def create_db():
-    """Create the configured database."""
-    for cmd in INIT_DB_CMD:
-        os.system(cmd)
+    db.create_all()
+    init_db(test_data)
 
 
 @app.cli.command()
@@ -68,17 +33,25 @@ def drop_db():
 @app.cli.command()
 def create_user():
     """Create user command"""
-    # import sys
+    from app.models import User
+
     username = input("username: ")
     password = input("password: ")
-    user_service.create_user(username, password)
+    User(username=username, password=password).save()
 
 
 @app.cli.command()
 def remove_user():
     """Remove user"""
+    from app.models import User
+
     username = input("Username: ")
-    user_service.remove_user(username)
+    user: User = User.query.filter_by(username=username).first()
+    if user:
+        user.deleted = True
+        user.save()
+    else:
+        print(f"User [{username}] not found")
 
 
 if __name__ == "__main__":

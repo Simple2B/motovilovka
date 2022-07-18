@@ -1,7 +1,6 @@
 FROM python:3.9
 
 WORKDIR /app
-COPY . .
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONBUFFERED 1
@@ -12,4 +11,8 @@ RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-
 ENV PATH="${PATH}:/root/.poetry/bin"
 RUN poetry self update
 
+COPY pyproject.toml .
+COPY poetry.lock .
 RUN POETRY_VIRTUALENVS_CREATE=false poetry install --no-dev --no-interaction --no-ansi
+
+COPY . .

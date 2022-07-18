@@ -1,17 +1,23 @@
 from app.models import User
+from config import BaseConfig as conf
+
+from app.controllers.database import TEST_PASS
 
 
-def register(username, email="username@test.com", password="password"):
-    user = User(username=username, email=email, password=password)
+def register(username, password=TEST_PASS):
+    user = User(username=username, password=password)
     user.save()
-    print(user.id)
     return user.id
 
 
-def login(client, username, email="username@test.com", password="password"):
-    return client.post(
-        "/login", json=dict(username=username, email=email, password=password), follow_redirects=True
+def login(client, user_name=conf.ADMIN_USER, password=conf.ADMIN_PASS):
+    res = client.post(
+        "/login",
+        data=dict(username=user_name, password=password),
+        follow_redirects=True,
     )
+    assert res.status_code == 200
+    return res
 
 
 def logout(client):
