@@ -14,5 +14,16 @@
         "tests"
     ],
     "python.testing.unittestEnabled": false,
-    "python.testing.pytestEnabled": true
+    "python.testing.pytestEnabled": true,
+    "cSpell.words": [
+        "dotenv",
+        "Motovilovka",
+        "mqtt",
+        "paho",
+        "sqlalchemy",
+        "viewonly",
+        "virtualenvs",
+        "werkzeug",
+        "wtforms"
+    ]
 }

@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block links %}
+    <link href="{{ url_for('static', filename='css/custom_forms.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/search.css') }}" rel="stylesheet" media="screen">
+{% endblock %}
+
+{% block content %}
+<main class="d-flex justify-content-center">
+  <form class="form-add d-flex flex-column justify-content-between" action="{{ url_for('users.user_add') }}" method="post">
+
+    {{ form.hidden_tag() }}
+
+    <h1 class="h3 my-3">New User</h1>
+
+    <div class="hit-fieldset d-flex justify-content-between pb-2 w-100">
+      <p class="me-3 pt-3">{{form.username.label}}: </p>
+      {{form.username(type="username", class='hit-input')}}
+    </div>
+
+    <div class="hit-fieldset d-flex justify-content-between pb-2 w-100">
+      <p class="fme-3 pt-3">{{form.password.label}}: </p>
+      {{form.password(type="password", class='hit-input')}}
+    </div>
+
+    <div class="hit-fieldset d-flex justify-content-between pb-2 w-100">
+      <p class="me-3 pt-3">{{form.password_confirm.label}}: </p>
+      {{form.password_confirm(type="password", class='hit-input')}}
+    </div>
+
+    <div class="hit-fieldset d-flex justify-content-between pb-2 w-100">
+      <p class="me-3 pt-3">{{form.role.label}}: </p>
+      {{form.role(type="role", class='hit-input')}}
+    </div>
+
+    {{form.submit(class='user_form_submit w-100 btn btn-lg btn-primary')}}
+
+    <div class="instructions">
+      {% for field, errors in form.errors.items() %}
+        <div class="custom_alert alert alert-error">
+            {{ form[field].label }}: {{ ', '.join(errors) }}
+        </div>
+      {% endfor %}
+      <p class="form_instructions">To set username use uppercase and lowercase letters underscore and hyphen. Please, don't use any other special symbols or whitespaces.</p>
+    </div>
+  </form>
+
+</main>
+{% endblock %}
+
+{% block scripts %}
+  <script src="{{ url_for('static', filename='js/user_search.js') }}" type="text/javascript"></script>
+{% endblock %}

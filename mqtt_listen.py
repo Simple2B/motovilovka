@@ -3,13 +3,13 @@ import paho.mqtt.client as mqtt
 HOST, PORT = "localhost", 1883
 
 
-def on_message(client, userdata, message):
+def on_message(client, user_data, message):
     print(f"message receive: {message.payload.decode('utf-8')}, topic: {message.topic}")
 
 
-def on_connect(client, userdata, flags, rc):
+def on_connect(client, user_data, flags, rc):
     print(f"Connected: {client}")
-    print(userdata, flags, rc)
+    print(user_data, flags, rc)
     client.subscribe("top1")
     client.on_message = on_message
 

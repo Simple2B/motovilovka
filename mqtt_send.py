@@ -1,25 +1,26 @@
-import paho.mqtt.client as mqtt
 import time
+import paho.mqtt.client as mqtt
+
 HOST, PORT = "localhost", 1883
 
 
-def on_connect(client, userdata, flags, rc):
+def on_connect(client: mqtt.Client, user_data, flags, rc):
     print(f"Connected: {client}")
-    print(userdata, flags, rc)
+    print(user_data, flags, rc)
     client.publish("top1", time.time(), 2)
 
 
-def on_connect_failed(client):
+def on_connect_failed(client: mqtt.Client):
     print("Failed to connect")
 
 
-def on_disconnect(client, userdata, rc):
+def on_disconnect(client: mqtt.Client, user_data, rc):
     print("disconnected")
-    print(userdata)
+    print(user_data)
     print(rc)
 
 
-def on_publish(client, userdata, mid):
+def on_publish(client: mqtt.Client, user_data, mid):
     print(f"message sended: {mid}")
 
 
