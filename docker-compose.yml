@@ -7,8 +7,8 @@ services:
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: db
-      POSTGRES_USER: potgres
-      PGUSER: potgres
+      POSTGRES_USER: postgres
+      PGUSER: postgres
       PGDATABASE: db
       PGPASSWORD: ${POSTGRES_PASSWORD}
 
