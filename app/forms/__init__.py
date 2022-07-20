@@ -2,3 +2,6 @@
 from .login import LoginForm, TwoFactorForm
 from .user_create_form import UserCreateForm
 from .user_update_form import UserUpdateForm
+from .registration import RegistrationForm
+from .password_reset import PasswordResetForm
+from .forgot_password import ForgotPasswordForm

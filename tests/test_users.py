@@ -1,27 +1,7 @@
-import pytest
 from sqlalchemy import desc
 from flask.testing import FlaskClient
-from app import db, create_app
-from app.controllers import init_db
-from app.models import User
+from app.models import User, Account
 from .utils import login
-
-
-@pytest.fixture
-def client():
-    app = create_app(environment="testing")
-    app.config["TESTING"] = True
-
-    with app.test_client() as client:
-        app_ctx = app.app_context()
-        app_ctx.push()
-        db.drop_all()
-        db.create_all()
-        init_db(True)
-        yield client
-        db.session.remove()
-        db.drop_all()
-        app_ctx.pop()
 
 
 def test_users_page(client: FlaskClient):
@@ -39,12 +19,14 @@ def test_add_user(client: FlaskClient):
     login(client)
     TEST_USERNAME = "TEST_USERNAME"
     TEST_PASSWORD = "TEST_PASS"
+    TEST_EMAIL = "email@test.com"
     TEST_ROLE = 1
 
     res = client.post(
         "/user_add",
         data=dict(
             username=TEST_USERNAME,
+            email=TEST_EMAIL,
             password=TEST_PASSWORD,
             password_confirm=TEST_PASSWORD,
             role=TEST_ROLE,
@@ -57,13 +39,27 @@ def test_add_user(client: FlaskClient):
 
     assert user.username == TEST_USERNAME
 
+    # check if created account for this user
+    account: Account = Account.query.filter_by(user_id=user.id).first()
+    assert account
+    assert account.user.username == TEST_USERNAME
+    assert account.mqtt_login
+    assert account.mqtt_password
+
 
 def test_user_delete(client: FlaskClient):
     login(client)
-    response = client.get("/user_delete/10")
+    TEST_USER_ID = 2
+    user: User = User.query.get(TEST_USER_ID)
+    assert user
+    assert user.deleted is False
+    response = client.get(f"/user_delete/{TEST_USER_ID}")
     assert response.status_code == 302
-    user: User = User.query.get(10)
+    user: User = User.query.get(TEST_USER_ID)
     assert user.deleted is True
+    accounts: list[Account] = Account.query.filter_by(user_id=TEST_USER_ID).all()
+    for acc in accounts:
+        assert acc.deleted
 
 
 def test_update_user(client: FlaskClient):

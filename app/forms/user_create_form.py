@@ -5,7 +5,13 @@ from wtforms import (
     SubmitField,
     SelectField,
 )
-from wtforms.validators import DataRequired, InputRequired, EqualTo, ValidationError
+from wtforms.validators import (
+    DataRequired,
+    InputRequired,
+    EqualTo,
+    ValidationError,
+    Email,
+)
 from app.models import User
 
 
@@ -43,6 +49,7 @@ FORBIDDEN_SYMBOLS = [
 
 class UserCreateForm(FlaskForm):
     username = StringField("Username", [DataRequired()])
+    email = StringField("Email Address", validators=[DataRequired(), Email()])
     password = PasswordField("Password", [DataRequired()])
     password_confirm = PasswordField(
         "Confirm Password",

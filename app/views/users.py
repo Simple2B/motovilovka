@@ -5,21 +5,24 @@ from flask import (
     redirect,
     request,
     url_for,
-    flash,
 )
 from flask_login import login_required, current_user
 from sqlalchemy import desc
-from app.models import User
+from app.models import User, Account
 from app.forms import UserCreateForm, UserUpdateForm
+from app.controllers import remove_account, create_account, gen_password
+from app.logger import log
 
 users_blueprint = Blueprint("users", __name__)
+
+ADMIN_ROLES = (User.Role.admin,)
 
 
 @users_blueprint.route("/users")
 @login_required
 def users_page():
-    if current_user.role != User.Role.admin:
-        return redirect(url_for("users.users_page"))
+    if current_user.role not in ADMIN_ROLES:
+        return redirect(url_for("main.index"))
     page = request.args.get("page", 1, type=int)
     users = User.query.order_by(desc(User.id)).paginate(
         page=page, per_page=current_app.config["PAGE_SIZE"]
@@ -31,9 +34,19 @@ def users_page():
 @users_blueprint.route("/user_delete/<int:user_id>", methods=["GET"])
 @login_required
 def user_delete(user_id: int):
+    if current_user.role not in ADMIN_ROLES:
+        return redirect(url_for("main.index"))
     user: User = User.query.get(user_id)
+    user.username = user.username + "~" + gen_password()
+    user.email = user.email + "~" + gen_password()
     user.deleted = True
     user.save()
+    log(log.INFO, "Deleted User:[%s]", user)
+
+    # delete user accounts
+    for account in Account.query.filter_by(user_id=user_id).all():
+        remove_account(account)
+        log(log.INFO, "Deleted Account:[%s]", account)
 
     return redirect(url_for("users.users_page"))
 
@@ -41,14 +54,20 @@ def user_delete(user_id: int):
 @users_blueprint.route("/user_add", methods=["GET", "POST"])
 @login_required
 def user_add():
+    if current_user.role not in ADMIN_ROLES:
+        return redirect(url_for("main.index"))
     form = UserCreateForm()
 
     if form.validate_on_submit():
-        User(
+        user = User(
             username=form.username.data,
             password=form.password.data,
+            email=form.email.data,
             role=User.Role(form.role.data),
         ).save()
+        log(log.INFO, "Created User:[%s]", user)
+        account: Account = create_account(user_id=user.id)
+        log(log.INFO, "Created Account:[%s]", account)
 
         return redirect(url_for("users.users_page"))
     return render_template("user/add.html", form=form)
@@ -57,9 +76,9 @@ def user_add():
 @users_blueprint.route("/user_update/<int:user_id>", methods=["GET", "POST"])
 @login_required
 def user_update(user_id: int):
-    if user_id != current_user.id and current_user.role != User.Role.admin:
-        flash("Access denied", "danger")
-        return redirect(url_for("users.user_update", user_id=current_user.id))
+    if current_user.role not in ADMIN_ROLES and current_user.id != user_id:
+        return redirect(url_for("main.index"))
+
     form = UserUpdateForm()
     user: User = User.query.get(user_id)
 
@@ -81,6 +100,8 @@ def user_update(user_id: int):
 @users_blueprint.route("/user_search/<query>")
 @login_required
 def user_search(query):
+    if current_user.role not in ADMIN_ROLES:
+        return redirect(url_for("main.index"))
     page = request.args.get("page", 1, type=int)
     splitted_queries = query.split(",")
     search_result = User.query.filter_by(id=0)
