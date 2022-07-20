@@ -1,13 +1,11 @@
-{% extends 'base.html' %}
-
-{% block links %}
-  <link href="{{ url_for('static', filename='css/login.css') }}" rel="stylesheet">
-{% endblock %}
-
-{% block content %}
+{% extends 'base.html' %} {% block links %}
+<link
+  href="{{ url_for('static', filename='css/login.css') }}"
+  rel="stylesheet"
+/>
+{% endblock %} {% block content %}
 <main class="form-login">
   <form action="{{ url_for('login.login') }}" method="post">
-
     {{ form.hidden_tag() }}
 
     <h1 class="h3 mb-3 fw-normal">Login</h1>
@@ -15,7 +13,6 @@
     <div class="form-floating">
       {{form.username(type="username", class='form-control')}}
       {{form.username.label}}
-
     </div>
     <div class="form-floating">
       {{form.password(type="password", class='form-control')}}
@@ -23,6 +20,14 @@
     </div>
 
     {{form.submit(class='w-100 btn btn-lg btn-primary')}}
+    <p>
+      Don't have an account?
+      <a href="{{ url_for('login.register') }}">Register</a>.
+    </p>
+    <p>
+      Forgot password?
+      <a href="{{ url_for('login.reset_password') }}">Reset password</a>.
+    </p>
   </form>
 </main>
 {% endblock %}
