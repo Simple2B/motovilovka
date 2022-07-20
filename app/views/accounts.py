@@ -9,7 +9,7 @@ from app.models import Account, User
 
 accounts_blueprint = Blueprint("accounts", __name__)
 
-ADMIN_ROLES = User.Role.admin
+ADMIN_ROLES = (User.Role.admin,)
 
 
 @accounts_blueprint.route("/accounts")

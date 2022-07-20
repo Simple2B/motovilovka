@@ -2,3 +2,4 @@
 from .login import login_blueprint
 from .main import main_blueprint
 from .users import users_blueprint
+from .accounts import accounts_blueprint
