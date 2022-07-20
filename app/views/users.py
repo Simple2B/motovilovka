@@ -11,7 +11,7 @@ from flask_login import login_required, current_user
 from sqlalchemy import desc
 from app.models import User, Account
 from app.forms import UserCreateForm, UserUpdateForm
-from app.controllers import remove_account, create_account
+from app.controllers import remove_account, create_account, gen_password
 from app.logger import log
 
 users_blueprint = Blueprint("users", __name__)
@@ -35,6 +35,8 @@ def users_page():
 @login_required
 def user_delete(user_id: int):
     user: User = User.query.get(user_id)
+    user.username = user.username + "~" + gen_password()
+    user.email = user.email + "~" + gen_password()
     user.deleted = True
     user.save()
     log(log.INFO, "Deleted User:[%s]", user)
