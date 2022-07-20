@@ -1,4 +1,3 @@
-import email
 from flask import (
     current_app,
     render_template,
@@ -10,8 +9,10 @@ from flask import (
 )
 from flask_login import login_required, current_user
 from sqlalchemy import desc
-from app.models import User
+from app.models import User, Account
 from app.forms import UserCreateForm, UserUpdateForm
+from app.controllers import remove_account, create_account
+from app.logger import log
 
 users_blueprint = Blueprint("users", __name__)
 
@@ -36,6 +37,12 @@ def user_delete(user_id: int):
     user: User = User.query.get(user_id)
     user.deleted = True
     user.save()
+    log(log.INFO, "Deleted User:[%s]", user)
+
+    # delete user accounts
+    for account in Account.query.filter_by(user_id=user_id).all():
+        remove_account(account)
+        log(log.INFO, "Deleted Account:[%s]", account)
 
     return redirect(url_for("users.users_page"))
 
@@ -46,12 +53,15 @@ def user_add():
     form = UserCreateForm()
 
     if form.validate_on_submit():
-        User(
+        user = User(
             username=form.username.data,
             password=form.password.data,
             email=form.email.data,
             role=User.Role(form.role.data),
         ).save()
+        log(log.INFO, "Created User:[%s]", user)
+        account: Account = create_account(user_id=user.id)
+        log(log.INFO, "Created Account:[%s]", account)
 
         return redirect(url_for("users.users_page"))
     return render_template("user/add.html", form=form)

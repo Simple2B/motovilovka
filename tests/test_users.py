@@ -1,6 +1,6 @@
 from sqlalchemy import desc
 from flask.testing import FlaskClient
-from app.models import User
+from app.models import User, Account
 from .utils import login
 
 
@@ -39,13 +39,27 @@ def test_add_user(client: FlaskClient):
 
     assert user.username == TEST_USERNAME
 
+    # check if created account for this user
+    account: Account = Account.query.filter_by(user_id=user.id).first()
+    assert account
+    assert account.user.username == TEST_USERNAME
+    assert account.mqtt_login
+    assert account.mqtt_password
+
 
 def test_user_delete(client: FlaskClient):
     login(client)
-    response = client.get("/user_delete/10")
+    TEST_USER_ID = 2
+    user: User = User.query.get(TEST_USER_ID)
+    assert user
+    assert user.deleted is False
+    response = client.get(f"/user_delete/{TEST_USER_ID}")
     assert response.status_code == 302
-    user: User = User.query.get(10)
+    user: User = User.query.get(TEST_USER_ID)
     assert user.deleted is True
+    accounts: list[Account] = Account.query.filter_by(user_id=TEST_USER_ID).all()
+    for acc in accounts:
+        assert acc.deleted
 
 
 def test_update_user(client: FlaskClient):

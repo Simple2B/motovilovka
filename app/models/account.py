@@ -18,4 +18,4 @@ class Account(db.Model, ModelMixin):
     user = relationship("User")
 
     def __repr__(self):
-        return f"<{self.id}. user: {self.user_id}, created_at: {self.created_at}"
+        return f"<{self.id}:{self.mqtt_login} u:{self.user.username}, created:{self.created_at}"

@@ -1,7 +1,7 @@
 from flask.testing import FlaskClient
 from tests.utils import login, logout
 from app import mail
-from app.models import User
+from app.models import User, Account
 
 
 def test_auth_pages(client):
@@ -43,6 +43,10 @@ def test_register(client: FlaskClient):
             follow_redirects=True,
         )
         assert b"Login successful." in response.data
+
+    user: User = User.query.filter_by(email=EMAIL).first()
+    assert user
+    assert user.accounts
 
 
 def test_login_and_logout(client):

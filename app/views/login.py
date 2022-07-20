@@ -13,6 +13,7 @@ from sqlalchemy import func
 from app import mail, models as m
 from app.forms import LoginForm, RegistrationForm, ForgotPasswordForm, PasswordResetForm
 from app.logger import log
+from app.controllers import create_account
 from config import BaseConfig as CONF
 
 login_blueprint = Blueprint("login", __name__)
@@ -48,6 +49,8 @@ def register():
             email=form.email.data,
         )
         user.save()
+        # register user's account
+        create_account(user_id=user.id)
         # send mail to the user
         msg = Message(
             subject="New password",

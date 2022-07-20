@@ -38,3 +38,20 @@ def gen_password(pass_length=7) -> str:
             and sum(c.isdigit() for c in password) >= 1
         ):
             return password
+
+
+def create_account(user_id: int) -> Account:
+    account = Account(
+        user_id=user_id,
+        mqtt_login=gen_mqtt_login(),
+        mqtt_password=gen_password(),
+    ).save()
+    # TODO: need register on broker!
+    return account
+
+
+def remove_account(account: Account) -> Account:
+    account.deleted = True
+    account.save()
+    # TODO: provide solution for remove account from MQTT broker
+    return account

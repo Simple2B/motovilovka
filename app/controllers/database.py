@@ -29,12 +29,12 @@ def init_db(add_test_data: bool = False):
                 username=f"user_{i+1}",
                 password=TEST_PASS,
                 email=f"user_{i+1}@test.com",
-            ).save(False)
+            ).save()
             account = m.Account(
                 user_id=user.id,
                 mqtt_login=gen_mqtt_login(),
                 mqtt_password=gen_password(),
-            ).save(False)
+            ).save()
             for j in range(TEST_NUMBER_DEVICE_PER_USER):
                 m.Device(
                     account_id=account.id,
