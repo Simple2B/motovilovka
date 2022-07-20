@@ -3,6 +3,7 @@ import os
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from flask_mail import Mail
 
 from flask_migrate import Migrate
 from werkzeug.exceptions import HTTPException
@@ -12,6 +13,7 @@ from app.logger import log
 login_manager = LoginManager()
 db = SQLAlchemy()
 migrate = Migrate()
+mail = Mail()
 
 
 def create_app(environment="development"):
@@ -40,6 +42,7 @@ def create_app(environment="development"):
     db.init_app(app)
     migrate.init_app(app, db)
     login_manager.init_app(app)
+    mail.init_app(app)
 
     # Register blueprints.
     app.register_blueprint(login_blueprint)

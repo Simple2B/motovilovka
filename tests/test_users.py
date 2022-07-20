@@ -19,12 +19,14 @@ def test_add_user(client: FlaskClient):
     login(client)
     TEST_USERNAME = "TEST_USERNAME"
     TEST_PASSWORD = "TEST_PASS"
+    TEST_EMAIL = "email@test.com"
     TEST_ROLE = 1
 
     res = client.post(
         "/user_add",
         data=dict(
             username=TEST_USERNAME,
+            email=TEST_EMAIL,
             password=TEST_PASSWORD,
             password_confirm=TEST_PASSWORD,
             role=TEST_ROLE,

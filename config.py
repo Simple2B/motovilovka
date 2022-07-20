@@ -19,6 +19,7 @@ class BaseConfig(object):
     WTF_CSRF_ENABLED = False
     ADMIN_USER = os.environ.get("ADMIN_USER", "admin")
     ADMIN_PASS = os.environ.get("ADMIN_PASS", "pass")
+    ADMIN_EMAIL = os.environ.get("ADMIN_EMAIL", "admin@simple2b.com")
 
     ALPHABET_FULL = os.environ.get(
         "ALPHABET_FULL", "ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789"
@@ -43,6 +44,15 @@ class BaseConfig(object):
 
     BASE_MDM_API_URL = os.environ.get("BASE_MDM_API_URL", None)
     MDM_API_KEY = os.environ.get("MDM_API_KEY", None)
+
+    # Mail config
+    MAIL_SERVER = os.getenv("MAIL_SERVER", "localhost")
+    MAIL_PORT = int(os.getenv("MAIL_PORT", "465"))
+    MAIL_USE_TLS = False
+    MAIL_USE_SSL = True
+    MAIL_USERNAME = os.getenv("MAIL_USERNAME", "unknown_user_name")
+    MAIL_PASSWORD = os.getenv("MAIL_PASSWORD", "no-password")
+    MAIL_DEFAULT_SENDER = os.getenv("MAIL_DEFAULT_SENDER", "sender_name")
 
     @staticmethod
     def configure(app):

@@ -1,3 +1,4 @@
+import email
 from flask import (
     current_app,
     render_template,
@@ -18,8 +19,9 @@ users_blueprint = Blueprint("users", __name__)
 @users_blueprint.route("/users")
 @login_required
 def users_page():
-    if current_user.role != User.Role.admin:
-        return redirect(url_for("users.users_page"))
+    # TODO: temporary solution
+    # if current_user.role != User.Role.admin:
+    #     return redirect(url_for("users.users_page"))
     page = request.args.get("page", 1, type=int)
     users = User.query.order_by(desc(User.id)).paginate(
         page=page, per_page=current_app.config["PAGE_SIZE"]
@@ -47,6 +49,7 @@ def user_add():
         User(
             username=form.username.data,
             password=form.password.data,
+            email=form.email.data,
             role=User.Role(form.role.data),
         ).save()
 
