@@ -17,7 +17,7 @@ services:
 
     volumes:
       - db-data:/var/lib/postgresql/data
-      - ${BACKUP_DIR}:/db_dump
+      - ./${BACKUP_DIR}:/db_dump
 
   app:
     restart: always
@@ -32,6 +32,7 @@ services:
     entrypoint: "bash entry-point.sh"
     depends_on:
       - db
+      - mqtt
 
   # celery_worker:
   #   container_name: "celery_worker"
@@ -55,15 +56,16 @@ services:
     restart: always
     image: simple2b/motovilovka_mqtt_broker
     ports:
-      - 127.0.0.1:1883:1883
-      - 127.0.0.1:9001:9001
+      - 127.0.0.1:${MOSQUITTO_API_PORT}:${MOSQUITTO_API_PORT}
+      - 127.0.0.1:${MOSQUITTO_MQTT_LISTEN_PORT}:${MOSQUITTO_MQTT_LISTEN_PORT}
+      - 127.0.0.1:${MOSQUITTO_WEBSOCKET_PORT}:${MOSQUITTO_WEBSOCKET_PORT}
     volumes:
       - mosquitto:/mosquitto/config
       - mosquitto:/mosquitto/data
     environment:
       MOSQUITTO_ADMIN_USER: ${MOSQUITTO_ADMIN_USER}
-      MOSQUITO_ADMIN_PASSWORD: ${MOSQUITO_ADMIN_PASSWORD}
-
+      MOSQUITTO_ADMIN_PASSWORD: ${MOSQUITO_ADMIN_PASSWORD}
+      API_PORT: ${MOSQUITTO_API_PORT}
 volumes:
   mosquitto:
   db-data:

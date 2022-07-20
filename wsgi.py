@@ -1,6 +1,7 @@
 #!/user/bin/env python
 import click
 from app import create_app, db, models
+from app.services import user_service
 
 
 app = create_app()
@@ -33,25 +34,36 @@ def drop_db():
 @app.cli.command()
 def create_user():
     """Create user command"""
-    from app.models import User
+    username = input("Username: ")
 
-    username = input("username: ")
-    password = input("password: ")
-    User(username=username, password=password).save()
+    while True:
+        password = input("Password: ")
+        password_retry = input("Retry password: ")
+        if password != password_retry:
+            print("Password mismached. try again.")
+            continue
+        break
+
+    user_service.create_user(username, password)
+    # from app.models import User
+
+    # username = input("username: ")
+    # password = input("password: ")
+    # User(username=username, password=password).save()
 
 
 @app.cli.command()
 def remove_user():
     """Remove user"""
-    from app.models import User
+    # from app.models import User
 
-    username = input("Username: ")
-    user: User = User.query.filter_by(username=username).first()
-    if user:
-        user.deleted = True
-        user.save()
-    else:
-        print(f"User [{username}] not found")
+    # username = input("Username: ")
+    # user: User = User.query.filter_by(username=username).first()
+    # if user:
+    #     user.deleted = True
+    #     user.save()
+    # else:
+    #     print(f"User [{username}] not found")
 
 
 if __name__ == "__main__":
