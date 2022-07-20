@@ -27,7 +27,7 @@ def accounts_page():
 
 @accounts_blueprint.route("/account_search/<query>")
 @login_required
-def accounts_search(query):
+def account_search(query):
     page = request.args.get("page", 1, type=int)
     splitted_queries = query.split(",")
     search_result = Account.query.filter_by(id=0)
@@ -42,4 +42,4 @@ def accounts_search(query):
     accounts = search_result.paginate(
         page=page, per_page=current_app.config["PAGE_SIZE"]
     )
-    return render_template("users.html", accounts=accounts, query=query)
+    return render_template("accounts.html", accounts=accounts, query=query)
