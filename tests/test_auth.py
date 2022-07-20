@@ -1,7 +1,7 @@
 from flask.testing import FlaskClient
 from tests.utils import login, logout
 from app import mail
-from app.models import User, Account
+from app.models import User
 
 
 def test_auth_pages(client):
