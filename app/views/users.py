@@ -5,7 +5,6 @@ from flask import (
     redirect,
     request,
     url_for,
-    flash,
 )
 from flask_login import login_required, current_user
 from sqlalchemy import desc
