@@ -8,6 +8,8 @@ document.addEventListener("DOMContentLoaded", function () {
     baseSearchUrl = "/user_search/";
   } else if (page_title.innerHTML === "Accounts") {
     baseSearchUrl = "/account_search/";
+  } else if (page_title.innerHTML === "Devices") {
+    baseSearchUrl = "/device_search/";
   }
 
   function isAlphaNumeric(str) {
@@ -22,6 +24,7 @@ document.addEventListener("DOMContentLoaded", function () {
         !(code == 32) && // whitespace
         !(code == 44) && // comma
         !(code == 45) && // hyphen
+        !(code == 46) && // .
         !(code == 95)
       ) {
         // underscore
