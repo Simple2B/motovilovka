@@ -18,11 +18,15 @@ celery = "^5.2.6"
 redis = "^4.2.2"
 paho-mqtt = "^1.6.1"
 Flask-WTF = "^1.0.1"
+requests = "^2.28.1"
 Flask-Mail = "^0.9.1"
 email-validator = "^1.2.1"
+Werkzeug = "2.0.0"
+jinja2 = "3.0.3"
+
 
 [tool.poetry.dev-dependencies]
-pytest = "^5.2"
+pytest = "^7.1.2"
 pylint = "^2.13.7"
 ipython = "^8.4.0"
 black = "^22.6.0"

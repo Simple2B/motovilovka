@@ -1,6 +1,6 @@
 import paho.mqtt.client as mqtt
 
-HOST, PORT = "localhost", 1883
+HOST, PORT = "localhost", 7001
 
 
 def on_message(client, user_data, message):
@@ -20,7 +20,7 @@ def on_connect_failed(client):
 
 client = mqtt.Client("p2")
 # set username and password
-client.username_pw_set("username", "password")
+client.username_pw_set("!123", "123")
 client.on_connect = on_connect
 client.on_connect_fail = on_connect_failed
 client.connect(HOST, PORT)

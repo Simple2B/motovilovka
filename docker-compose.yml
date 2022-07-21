@@ -17,7 +17,7 @@ services:
 
     volumes:
       - db-data:/var/lib/postgresql/data
-      - ${BACKUP_DIR}:/db_dump
+      - ./${BACKUP_DIR}:/db_dump
 
   app:
     restart: always
@@ -25,50 +25,43 @@ services:
     environment:
       - FLASK_ENV=production
       - FLASK_APP=wsgi:app
-      - FLASK_DEBUG=1
-      - FLASK_PORT=${FLASK_PORT}
     ports:
-      - 127.0.0.1:${LOCAL_APP_PORT}:${FLASK_PORT}
+      - 127.0.0.1:${LOCAL_APP_PORT}:80
     entrypoint: "bash entry-point.sh"
     depends_on:
       - db
+      - mqtt
 
-  # celery_worker:
-  #   container_name: "celery_worker"
-  #   restart: always
-  #   image: olegdavimuka/lesson_project
-  #   depends_on:
-  #     - db
-  #   command: >
-  #     celery -A worker worker -B --loglevel=INFO
+  listener:
+    build: .
+    environment:
+      - FLASK_ENV=production
+      - FLASK_APP=wsgi:app
+    entrypoint: "flask mqtt"
+    depends_on:
+      - mqtt
+      - db
 
-  # redis:
-  #   restart: always
-  #   image: redis:alpine
-  #   ports:
-  #     - 127.0.0.1:${REDIS_PORT}:6379
-  #   environment:
-  #     - REDIS_PASSWORD=${REDIS_PASSWORD}
-  #   command: >
-  #     --requirepass ${REDIS_PASSWORD}
   mqtt:
     restart: always
     image: simple2b/motovilovka_mqtt_broker
     ports:
-      - 127.0.0.1:${MQTT_LOCAL_PORT-1883}:1883
-      - 127.0.0.1:${MQTT_LOCAL_WS_PORT-9001}:9001
+      - 127.0.0.1:${MOSQUITTO_API_PORT}:${MOSQUITTO_API_PORT}
+      - 127.0.0.1:${MOSQUITTO_MQTT_PORT}:1883
+      - 127.0.0.1:${MOSQUITTO_WEBSOCKET_PORT}:9001
     volumes:
       - mosquitto:/mosquitto/config
       - mosquitto:/mosquitto/data
     environment:
       MOSQUITTO_ADMIN_USER: ${MOSQUITTO_ADMIN_USER}
-      MOSQUITO_ADMIN_PASSWORD: ${MOSQUITO_ADMIN_PASSWORD}
+      MOSQUITTO_ADMIN_PASSWORD: ${MOSQUITTO_ADMIN_PASSWORD}
+      API_PORT: ${MOSQUITTO_API_PORT}
 
   backup:
     build: ./pg-backup
     restart: always
     volumes:
-      - ${BACKUP_DIR}:/backup
+      - ./${BACKUP_DIR}:/backup
     links:
       - db
     environment:
