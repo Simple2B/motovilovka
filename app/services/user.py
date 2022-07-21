@@ -1,7 +1,3 @@
-from .mqtt import mqtt_service
-from app import models
-
-
 class UserService:
     def create_user(self, username: str, password):
         # TODO Kolya code add here
