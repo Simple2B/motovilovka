@@ -53,17 +53,37 @@ def create_user():
 
 
 @app.cli.command()
-def remove_user():
-    """Remove user"""
-    # from app.models import User
+def user_list():
+    """Get all users"""
+    users = models.User.query.all()
+    print(users)
 
-    # username = input("Username: ")
-    # user: User = User.query.filter_by(username=username).first()
-    # if user:
-    #     user.deleted = True
-    #     user.save()
-    # else:
-    #     print(f"User [{username}] not found")
+
+@app.cli.command()
+def mqtt():
+    """Run mqtt listener"""
+    import paho.mqtt.client as mqtt
+    from config import BaseConfig as conf
+
+    def on_message(client, user_data, message):
+        print(f"message receive: {message.payload.decode('utf-8')}, topic: {message.topic}")
+
+    def on_connect(client, user_data, flags, rc):
+        print(f"Connected: {client}")
+        print(user_data, flags, rc)
+        client.subscribe("#")
+        client.on_message = on_message
+
+    def on_connect_failed(client):
+        print("Failed to connect")
+
+    client = mqtt.Client("p2")
+    # set username and password
+    client.username_pw_set(conf.MOSQUITTO_ADMIN_USER, conf.MOSQUITTO_ADMIN_PASSWORD)
+    client.on_connect = on_connect
+    client.on_connect_fail = on_connect_failed
+    client.connect("mqtt", 1883)
+    client.loop_forever()
 
 
 if __name__ == "__main__":

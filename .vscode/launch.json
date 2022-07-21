@@ -13,7 +13,7 @@
             "justMyCode": true
         },
         {
-            "name": "Debug",
+            "name": "Flask run",
             "type": "python",
             "request": "launch",
             "module": "flask",
@@ -23,7 +23,9 @@
                 "FLASK_DEBUG": "1"
             },
             "args": [
-                "run"
+                "run",
+                "--port",
+                "7080"
             ],
             "jinja": true
         }
