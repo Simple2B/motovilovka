@@ -2,6 +2,7 @@
 import click
 from app import create_app, db, models
 from app.services import user_service
+from app.logger import log
 
 
 app = create_app()
@@ -66,23 +67,29 @@ def mqtt():
     from config import BaseConfig as conf
 
     def on_message(client, user_data, message):
-        print(f"message receive: {message.payload.decode('utf-8')}, topic: {message.topic}")
+        log(log.INFO, "Receive message from: %s", client)
+        log(log.INFO, "Topic: %s", message.topic)
+        log(log.INFO, "Data: %s", message.payload.decode("utf-8"))
 
     def on_connect(client, user_data, flags, rc):
-        print(f"Connected: {client}")
+        log(log.INFO, "Connected: %s", client)
         print(user_data, flags, rc)
         client.subscribe("#")
         client.on_message = on_message
 
     def on_connect_failed(client):
-        print("Failed to connect")
+        log(log.ERROR, "Connect failed: %s", client)
 
-    client = mqtt.Client("p2")
+    log(log.INFO, "Create client object")
+    client = mqtt.Client(conf.MOSQUITTO_ADMIN_USER)
     # set username and password
+    log(log.INFO, "set username and password")
     client.username_pw_set(conf.MOSQUITTO_ADMIN_USER, conf.MOSQUITTO_ADMIN_PASSWORD)
     client.on_connect = on_connect
     client.on_connect_fail = on_connect_failed
-    client.connect("mqtt", 1883)
+    log(log.INFO, "connect...")
+    client.connect(conf.MOSQUITTO_HOST, conf.MOSQUITTO_PORT)
+    log(log.INFO, "enter in loop...")
     client.loop_forever()
 
 

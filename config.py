@@ -36,6 +36,8 @@ class BaseConfig(object):
     # MQTT
     MOSQUITTO_ADMIN_USER = os.environ.get("MOSQUITTO_ADMIN_USER", "admin")
     MOSQUITTO_ADMIN_PASSWORD = os.environ.get("MOSQUITTO_ADMIN_PASSWORD", "passwd")
+    MOSQUITTO_HOST = os.environ.get("MOSQUITTO_HOST", "mqtt")
+    MOSQUITTO_PORT = int(os.environ.get("MOSQUITTO_PORT", "1883"))
 
     # Mail config
     MAIL_SERVER = os.getenv("MAIL_SERVER", "localhost")
