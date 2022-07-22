@@ -35,6 +35,21 @@
                 "7080"
             ],
             "jinja": true
+        },
+        {
+            "name": "mqtt listen",
+            "type": "python",
+            "request": "launch",
+            "module": "flask",
+            "justMyCode": false,
+            "env": {
+                "FLASK_ENV": "development",
+                "FLASK_DEBUG": "1"
+            },
+            "args": [
+                "mqtt"
+            ],
+            "jinja": true
         }
     ]
 }

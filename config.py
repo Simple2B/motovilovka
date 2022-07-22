@@ -67,6 +67,8 @@ class DevelopmentConfig(BaseConfig):
 
     MOSQUITTO_API_HOST = os.environ.get("DEV_MOSQUITTO_API_HOST", "localhost")
     MOSQUITTO_API_PORT = os.environ.get("DEV_MOSQUITTO_API_PORT", "8080")
+    MOSQUITTO_HOST = os.environ.get("DEV_MOSQUITTO_HOST", "mqtt")
+    MOSQUITTO_PORT = int(os.environ.get("DEV_MOSQUITTO_PORT", "1883"))
 
     URL_JAVA_SRV = os.environ.get("DEV_URL_JAVA_SRV", None)
 

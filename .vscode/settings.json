@@ -22,6 +22,7 @@
         "mqtt",
         "paho",
         "sqlalchemy",
+        "userdata",
         "viewonly",
         "virtualenvs",
         "werkzeug",
