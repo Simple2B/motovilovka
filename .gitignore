@@ -12,3 +12,4 @@ mosquitto/
 *.pyc
 /*.sqlite3
 debug.json
+.env.*
