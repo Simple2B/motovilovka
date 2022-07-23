@@ -38,6 +38,7 @@ def init_db(add_test_data: bool = False):
             for j in range(TEST_NUMBER_DEVICE_PER_USER):
                 m.Device(
                     account_id=account.id,
+                    type="test",
                     name=f"dev.{user.username}.{j}",
                 ).save(False)
 

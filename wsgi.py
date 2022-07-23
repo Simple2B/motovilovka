@@ -63,32 +63,9 @@ def user_list():
 @app.cli.command()
 def mqtt():
     """Run mqtt listener"""
-    import paho.mqtt.client as mqtt
-    from config import BaseConfig as conf
+    from app.controllers import MqttClient
 
-    def on_message(client, user_data, message):
-        log(log.INFO, "Receive message from: %s", client)
-        log(log.INFO, "Topic: %s", message.topic)
-        log(log.INFO, "Data: %s", message.payload.decode("utf-8"))
-
-    def on_connect(client, user_data, flags, rc):
-        log(log.INFO, "Connected: %s", client)
-        print(user_data, flags, rc)
-        client.subscribe("#")
-        client.on_message = on_message
-
-    def on_connect_failed(client):
-        log(log.ERROR, "Connect failed: %s", client)
-
-    log(log.INFO, "Create client object")
-    client = mqtt.Client(conf.MOSQUITTO_ADMIN_USER)
-    # set username and password
-    log(log.INFO, "set username and password")
-    client.username_pw_set(conf.MOSQUITTO_ADMIN_USER, conf.MOSQUITTO_ADMIN_PASSWORD)
-    client.on_connect = on_connect
-    client.on_connect_fail = on_connect_failed
-    log(log.INFO, "connect...")
-    client.connect(conf.MOSQUITTO_HOST, conf.MOSQUITTO_PORT)
+    client = MqttClient()
     log(log.INFO, "enter in loop...")
     client.loop_forever()
 

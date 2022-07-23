@@ -38,6 +38,8 @@ class BaseConfig(object):
     MOSQUITTO_ADMIN_PASSWORD = os.environ.get("MOSQUITTO_ADMIN_PASSWORD", "passwd")
     MOSQUITTO_HOST = os.environ.get("MOSQUITTO_HOST", "mqtt")
     MOSQUITTO_PORT = int(os.environ.get("MOSQUITTO_PORT", "1883"))
+    MOSQUITTO_API_HOST = os.environ.get("MOSQUITTO_API_HOST", "localhost")
+    MOSQUITTO_API_PORT = os.environ.get("MOSQUITTO_API_PORT", "8080")
 
     # Mail config
     MAIL_SERVER = os.getenv("MAIL_SERVER", "localhost")
@@ -63,7 +65,10 @@ class DevelopmentConfig(BaseConfig):
         "sqlite:///" + os.path.join(BASE_DIR, "database-devel.sqlite3"),
     )
 
-    # AUTH_OTP_ENABLED = False
+    MOSQUITTO_API_HOST = os.environ.get("DEV_MOSQUITTO_API_HOST", "localhost")
+    MOSQUITTO_API_PORT = os.environ.get("DEV_MOSQUITTO_API_PORT", "8080")
+    MOSQUITTO_HOST = os.environ.get("DEV_MOSQUITTO_HOST", "mqtt")
+    MOSQUITTO_PORT = int(os.environ.get("DEV_MOSQUITTO_PORT", "1883"))
 
     URL_JAVA_SRV = os.environ.get("DEV_URL_JAVA_SRV", None)
 

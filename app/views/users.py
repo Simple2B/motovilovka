@@ -36,17 +36,18 @@ def users_page():
 def user_delete(user_id: int):
     if current_user.role not in ADMIN_ROLES:
         return redirect(url_for("main.index"))
+
+    # delete user accounts
+    for account in Account.query.filter_by(user_id=user_id).all():
+        remove_account(account)
+        log(log.INFO, "Deleted Account:[%s]", account)
+
     user: User = User.query.get(user_id)
     user.username = user.username + "~" + gen_password()
     user.email = user.email + "~" + gen_password()
     user.deleted = True
     user.save()
     log(log.INFO, "Deleted User:[%s]", user)
-
-    # delete user accounts
-    for account in Account.query.filter_by(user_id=user_id).all():
-        remove_account(account)
-        log(log.INFO, "Deleted Account:[%s]", account)
 
     return redirect(url_for("users.users_page"))
 
