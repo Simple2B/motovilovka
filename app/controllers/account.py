@@ -1,7 +1,6 @@
 import secrets
 from config import BaseConfig as conf
 from app.models import Account
-from .mqtt import mqtt_set_user, mqtt_remove_user
 from app.logger import log
 
 LOGIN_LEN = 6
@@ -43,6 +42,8 @@ def gen_password(pass_length=7) -> str:
 
 
 def create_account(user_id: int) -> Account:
+    from .mqtt import mqtt_set_user
+
     account = Account(
         user_id=user_id,
         mqtt_login=gen_mqtt_login(),
@@ -60,6 +61,8 @@ def create_account(user_id: int) -> Account:
 
 
 def remove_account(account: Account) -> Account:
+    from .mqtt import mqtt_remove_user
+
     log(
         log.INFO,
         "Delete broker account %s",

@@ -4,9 +4,17 @@ from app.controllers import init_db
 
 
 @pytest.fixture
-def client():
+def client(monkeypatch: pytest.MonkeyPatch):
     app = create_app(environment="testing")
     app.config["TESTING"] = True
+
+    def dummy(*args, **argv):
+        return True
+
+    from app.controllers import mqtt
+
+    monkeypatch.setattr(mqtt, "mqtt_set_user", dummy)
+    monkeypatch.setattr(mqtt, "mqtt_remove_user", dummy)
 
     with app.test_client() as client:
         app_ctx = app.app_context()
