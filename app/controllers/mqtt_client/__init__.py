@@ -4,28 +4,20 @@ from app.models import Device, Account, User
 
 
 class MqttClient:
-    def __init__(
-        self,
-        account: Account = None
-    ):
+    def __init__(self, account: Account = None):
         from flask import current_app as app
 
         HOST, PORT = app.config["MOSQUITTO_HOST"], app.config["MOSQUITTO_PORT"]
 
         if account is None:
-            admin = User.query.filter(User.username == "admin").first()
-            if not admin:
-                log(log.ERROR, "Admin user did not create.")
-                return
-
-            if not admin.accounts:
-                log(log.ERROR, "Admin has not account")
-                return
-
-            account = admin.accounts[0]
+            mqtt_login = app.config["MOSQUITTO_ADMIN_USER"]
+            mqtt_password = app.config["MOSQUITTO_ADMIN_PASSWORD"]
+        else:
+            mqtt_login = account.mqtt_login
+            mqtt_password = account.mqtt_password
 
         self.client = mqtt.Client(
-            client_id=f"client-{account.mqtt_login}",
+            client_id=f"client-{mqtt_login}",
             reconnect_on_failure=False,
         )
 
@@ -35,7 +27,7 @@ class MqttClient:
         self.client.on_disconnect = self.on_disconnect
         self.client.on_log = self.on_log
 
-        self.client.username_pw_set(account.mqtt_login, account.mqtt_password)
+        self.client.username_pw_set(mqtt_login, mqtt_password)
         log(log.INFO, "connect... %s %s", HOST, PORT)
         self.client.connect(HOST, PORT)
 
@@ -45,7 +37,7 @@ class MqttClient:
 
     @staticmethod
     def on_device_message(device: Device, message: mqtt.MQTTMessage):
-        msg_text = message.payload.decode('utf-8')
+        msg_text = message.payload.decode("utf-8")
         log(log.INFO, f"Device {device.name}: {msg_text}")
 
     @staticmethod
@@ -77,11 +69,12 @@ class MqttClient:
             return
 
         # Search device in DB
-        device = Device.query.filter(
-            Device.name == device_name
-        ).join(Device.account).filter(
-            Account.mqtt_login == device_user
-        ).first()
+        device = (
+            Device.query.filter(Device.name == device_name)
+            .join(Device.account)
+            .filter(Account.mqtt_login == device_user)
+            .first()
+        )
 
         # Create device if device does not in DB
         if not device:
