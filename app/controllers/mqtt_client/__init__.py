@@ -1,6 +1,6 @@
 from paho.mqtt import client as mqtt
 from app.logger import log
-from app.models import Device, Account, User
+from app.models import Device, Account
 
 
 class MqttClient:
