@@ -1,7 +1,6 @@
 #!/user/bin/env python
 import click
 from app import create_app, db, models
-from app.services import user_service
 from app.logger import log
 
 
@@ -44,20 +43,30 @@ def create_user():
             print("Password mismached. try again.")
             continue
         break
-
-    user_service.create_user(username, password)
-    # from app.models import User
-
-    # username = input("username: ")
-    # password = input("password: ")
-    # User(username=username, password=password).save()
+    # TODO user create
 
 
 @app.cli.command()
 def user_list():
     """Get all users"""
     users = models.User.query.all()
-    print(users)
+
+    if not users:
+        log(log.INFO, "No users")
+    
+    for user in users:
+        log(log.INFO, f"{user}")
+
+
+@app.cli.command()
+def device_list():
+    """Get all devices"""
+    devices = models.Device.query.all()
+    if not devices:
+        log(log.INFO, "No devices")
+
+    for device in devices:
+        log(log.INFO, device)
 
 
 @app.cli.command()

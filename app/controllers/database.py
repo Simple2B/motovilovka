@@ -2,7 +2,7 @@ import os
 from flask import current_app as app
 from app import db, models as m
 from app.logger import log
-from .account import gen_mqtt_login, gen_password
+from .account import gen_mqtt_login, gen_password, create_account
 
 TEST_USERS_NUMBER = int(os.environ.get("TEST_USERS_NUMBER", "10"))
 TEST_NUMBER_DEVICE_PER_USER = int(os.environ.get("TEST_NUMBER_DEVICE_PER_USER", "10"))
@@ -15,13 +15,16 @@ def init_db(add_test_data: bool = False):
     Args:
         add_test_data (bool, optional): will add test data if set True. Defaults to False.
     """
+    # Create admin
     log(log.INFO, "Add admin account: %s", app.config["ADMIN_USER"])
-    m.User(
+    admin = m.User(
         username=app.config["ADMIN_USER"],
         password=app.config["ADMIN_PASS"],
         email=app.config["ADMIN_EMAIL"],
         role="admin",
     ).save()
+    create_account(admin, "admin", app.config["MOSQUITTO_ADMIN_PASSWORD"])
+
     if add_test_data:
         log(log.INFO, "Generate test data")
         for i in range(TEST_USERS_NUMBER):

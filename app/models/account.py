@@ -16,6 +16,7 @@ class Account(db.Model, ModelMixin):
     deleted = db.Column(db.Boolean, default=False)
 
     user = relationship("User")
+    devices = relationship("Device", lazy="dynamic", viewonly=True)
 
     def __repr__(self):
         return f"<{self.id}:{self.mqtt_login} u:{self.user.username}, created:{self.created_at}"

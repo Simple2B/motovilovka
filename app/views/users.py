@@ -67,7 +67,7 @@ def user_add():
             role=User.Role(form.role.data),
         ).save()
         log(log.INFO, "Created User:[%s]", user)
-        account: Account = create_account(user_id=user.id)
+        account: Account = create_account(user)
         log(log.INFO, "Created Account:[%s]", account)
 
         return redirect(url_for("users.users_page"))

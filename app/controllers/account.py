@@ -2,6 +2,7 @@ import secrets
 from config import BaseConfig as conf
 from app.models import Account
 from app.logger import log
+from app import models
 
 LOGIN_LEN = 6
 
@@ -41,13 +42,24 @@ def gen_password(pass_length=7) -> str:
             return password
 
 
-def create_account(user_id: int) -> Account:
+def create_account(user: models.User, mqtt_login: str = None, mqtt_password: str = None) -> Account:
     from .mqtt import mqtt_set_user
 
+    if mqtt_login is None:
+        mqtt_login = gen_mqtt_login()
+
+    if mqtt_password is None:
+        mqtt_password = gen_password()
+
+    err = mqtt_set_user(mqtt_login, mqtt_password)
+    if err != 0:
+        log(log.ERROR, f"mqtt account creation failed: {err}. {user.username}: {mqtt_login}")
+        return None
+
     account = Account(
-        user_id=user_id,
-        mqtt_login=gen_mqtt_login(),
-        mqtt_password=gen_password(),
+        user_id=user.id,
+        mqtt_login=mqtt_login,
+        mqtt_password=mqtt_password,
     ).save()
     # register on MQTT broker
     log(
@@ -56,7 +68,6 @@ def create_account(user_id: int) -> Account:
         account.mqtt_login,
         account.mqtt_password,
     )
-    mqtt_set_user(account.mqtt_login, account.mqtt_password)
     return account
 
 

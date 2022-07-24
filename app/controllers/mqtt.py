@@ -20,6 +20,7 @@ def mqtt_set_user(username: str, password: str):
         f"{BASE_URL}/user", json={"login": username, "password": password}
     )
     res.raise_for_status()
+    return res.json()["error"]
 
 
 def mqtt_remove_user(username: str):

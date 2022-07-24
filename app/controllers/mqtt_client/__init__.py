@@ -1,22 +1,31 @@
 from paho.mqtt import client as mqtt
-
-# from paho.mqtt.client import MQTTv311
-from config import BaseConfig as conf
 from app.logger import log
+from app.models import Device, Account, User
 
 
 class MqttClient:
     def __init__(
-        self, login=conf.MOSQUITTO_ADMIN_USER, password=conf.MOSQUITTO_ADMIN_PASSWORD
+        self,
+        account: Account = None
     ):
         from flask import current_app as app
 
+        HOST, PORT = app.config["MOSQUITTO_HOST"], app.config["MOSQUITTO_PORT"]
+
+        if account is None:
+            admin = User.query.filter(User.username == "admin").first()
+            if not admin:
+                log(log.ERROR, "Admin user did not create.")
+                return
+
+            if not admin.accounts:
+                log(log.ERROR, "Admin has not account")
+                return
+
+            account = admin.accounts[0]
+
         self.client = mqtt.Client(
-            client_id=f"client-{login}",
-            # clean_session=None,
-            # userdata=None,
-            # protocol=MQTTv311,
-            # transport="tcp",
+            client_id=f"client-{account.mqtt_login}",
             reconnect_on_failure=False,
         )
 
@@ -26,21 +35,74 @@ class MqttClient:
         self.client.on_disconnect = self.on_disconnect
         self.client.on_log = self.on_log
 
-        log(log.INFO, "set username and password")
-        self.client.username_pw_set(login, password)
-        log(log.INFO, "connect...")
-        self.client.connect(app.config["MOSQUITTO_HOST"], app.config["MOSQUITTO_PORT"])
+        self.client.username_pw_set(account.mqtt_login, account.mqtt_password)
+        log(log.INFO, "connect... %s %s", HOST, PORT)
+        self.client.connect(HOST, PORT)
+
+    @staticmethod
+    def handle_error(err_message: str, message: mqtt.MQTTMessage):
+        log(log.ERROR, f"Error: {message.topic}, {err_message}")
+
+    @staticmethod
+    def on_device_message(device: Device, message: mqtt.MQTTMessage):
+        msg_text = message.payload.decode('utf-8')
+        log(log.INFO, f"Device {device.name}: {msg_text}")
 
     @staticmethod
     def on_message(client, user_data, message):
-        log(log.INFO, "Receive message from: %s", client)
-        log(log.INFO, "Topic: %s", message.topic)
-        log(log.INFO, "Data: %s", message.payload.decode("utf-8"))
+        # Check for topic length
+        backslash_count = 0
+        for ch in message.topic:
+            if ch == "/":
+                backslash_count += 1
+                if backslash_count > 3:
+                    break
+
+        if backslash_count != 3:
+            MqttClient.handle_error("Invalid topic name", message)
+            return
+
+        # Get device data
+        # TODO critical code! Need to optimize. Make device data getting in topic length check "code above"
+        # TODO best way limit topics subpath on MQTT broker layer
+        device_user, device_type, device_name, io = message.topic.split("/")
+        for topic_path in (device_type, device_name, io):
+            if not topic_path:
+                MqttClient.handle_error("Invalid topic name", message)
+                return
+
+        # Check if topic for transmit data
+        # TODO try to disable rx topic on MQTT broker layer
+        if io != "tx":
+            return
+
+        # Search device in DB
+        device = Device.query.filter(
+            Device.name == device_name
+        ).join(Device.account).filter(
+            Account.mqtt_login == device_user
+        ).first()
+
+        # Create device if device does not in DB
+        if not device:
+            account = Account.query.filter(Account.mqtt_login == device_user).first()
+            if not account:
+                MqttClient.handle_error("Account not found", message)
+                return
+            device = Device(account_id=account.id, type=device_type, name=device_name)
+            device.save()
+            log(log.INFO, f"New device created: {device.name}")
+
+        # Update device type
+        elif device.type != device_type:
+            device.type = device_type
+            device.save()
+
+        MqttClient.on_device_message(device, message)
 
     @staticmethod
     def on_connect(client, user_data, flags, rc):
-        log(log.INFO, "Connected: %s", client)
-        print(user_data, flags, rc)
+        log(log.INFO, "Connected. rc: %i", rc)
         client.subscribe("#")
         client.on_message = MqttClient.on_message
 

@@ -50,7 +50,7 @@ def register():
         )
         user.save()
         # register user's account
-        create_account(user_id=user.id)
+        create_account(user)
         # send mail to the user
         msg = Message(
             subject="New password",

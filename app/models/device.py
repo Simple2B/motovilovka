@@ -18,4 +18,4 @@ class Device(db.Model, ModelMixin):
     account = relationship("Account")
 
     def __repr__(self):
-        return f"<{self.id}:{self.name}, created_at: {self.created_at}"
+        return f"<{self.id}:{self.name} t: {self.type}"

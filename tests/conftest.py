@@ -9,7 +9,8 @@ def client(monkeypatch: pytest.MonkeyPatch):
     app.config["TESTING"] = True
 
     def dummy(*args, **argv):
-        return True
+        error = 0
+        return error
 
     from app.controllers import mqtt
 
