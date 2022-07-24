@@ -34,16 +34,17 @@ def drop_db():
 @app.cli.command()
 def create_user():
     """Create user command"""
-    username = input("Username: ")
+    # username = input("Username: ")
 
-    while True:
-        password = input("Password: ")
-        password_retry = input("Retry password: ")
-        if password != password_retry:
-            print("Password mismached. try again.")
-            continue
-        break
+    # while True:
+    #     password = input("Password: ")
+    #     password_retry = input("Retry password: ")
+    #     if password != password_retry:
+    #         print("Password mismached. try again.")
+    #         continue
+    #     break
     # TODO user create
+    print("TODO")
 
 
 @app.cli.command()
@@ -53,7 +54,7 @@ def user_list():
 
     if not users:
         log(log.INFO, "No users")
-    
+
     for user in users:
         log(log.INFO, f"{user}")
 
