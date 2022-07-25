@@ -13,3 +13,5 @@ mosquitto/
 /*.sqlite3
 debug.json
 .env.*
+
+/node_modules/

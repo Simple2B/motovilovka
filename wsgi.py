@@ -81,19 +81,41 @@ def mqtt():
 
 
 @app.cli.command()
-@click.option("--topic", default="test_user/test_type/test_name", help="topic path")
+@click.option("--topic", default="test_type/test_name", help="topic path")
 @click.option("--value", default=1, help="data value")
 def write_topic(topic: str, value: int):
     """Write test MQTT topic"""
     import json
     from app.controllers import MqttClient
+    from app.models import Account
 
     log(log.INFO, "Write [%s]:[%s]", topic, value)
-    client = MqttClient(client_id="shell")
+    account: Account = Account.query.all()[-1]
+    client = MqttClient(client_id="shell", account=account)
     payload = json.dumps(dict(value=value), indent=2).encode()
     log(log.INFO, "Payload [%s]", payload)
-    res = client.publish(topic, payload=payload)
+    res = client.publish(f"{account.mqtt_login}/{topic}", payload=payload)
     print(res)
+
+
+@app.cli.command()
+@click.option("--account", default="admin", help="topic user name")
+@click.option("--name", default="device", help="device name")
+@click.option("--value", default=1, help="data value")
+def test_value(account: str, name: str, value: int):
+    """Set TEST_VALUE value"""
+    import json
+    from app.controllers import MqttClient
+    from app.models import Account
+
+    acc: Account = Account.query.filter(Account.mqtt_login == account).first()
+    if not acc:
+        log(log.ERROR, "Account [%s] not found", account)
+        return
+    client = MqttClient(client_id="shell", account=acc)
+    payload = json.dumps(dict(value=value), indent=2).encode()
+    log(log.INFO, "Payload [%s]", payload)
+    client.publish(f"{account}/TEST_VALUE/{name}", payload=payload)
 
 
 if __name__ == "__main__":
