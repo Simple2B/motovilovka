@@ -80,5 +80,18 @@ def mqtt():
     client.loop_forever()
 
 
+@app.cli.command()
+@click.option("--topic", default="test_user/test_type/test_name", help="topic path")
+@click.option("--value", default=1, help="data value")
+def write_topic(topic: str, value: int):
+    """Write test MQTT topic"""
+    import json
+    from app.controllers import MqttClient
+
+    log(log.INFO, "Write [%s]:[%s]", topic, value)
+    client = MqttClient()
+    client.publish(topic, json.dumps(dict(value=value)))
+
+
 if __name__ == "__main__":
     app.run()

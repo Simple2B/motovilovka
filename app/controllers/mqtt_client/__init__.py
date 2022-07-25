@@ -116,3 +116,6 @@ class MqttClient:
 
     def loop_forever(self):
         self.client.loop_forever(timeout=10)
+
+    def publish(self, topic, payload=None, qos=0, retain=False, properties=None):
+        return self.client.publish(topic, payload, qos, retain, properties)
