@@ -56,7 +56,7 @@ def user_list():
         log(log.INFO, "No users")
 
     for user in users:
-        print("{user}")
+        print(f"{user}")
 
 
 @app.cli.command()
@@ -75,7 +75,7 @@ def mqtt():
     """Run mqtt listener"""
     from app.controllers import MqttClient
 
-    client = MqttClient()
+    client = MqttClient(client_id="listener")
     log(log.INFO, "enter in loop...")
     client.loop_forever()
 
@@ -89,8 +89,11 @@ def write_topic(topic: str, value: int):
     from app.controllers import MqttClient
 
     log(log.INFO, "Write [%s]:[%s]", topic, value)
-    client = MqttClient()
-    client.publish(topic, json.dumps(dict(value=value)))
+    client = MqttClient(client_id="shell")
+    payload = json.dumps(dict(value=value), indent=2).encode()
+    log(log.INFO, "Payload [%s]", payload)
+    res = client.publish(topic, payload=payload)
+    print(res)
 
 
 if __name__ == "__main__":
