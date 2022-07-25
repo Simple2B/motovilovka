@@ -56,7 +56,7 @@ def user_list():
         log(log.INFO, "No users")
 
     for user in users:
-        log(log.INFO, f"{user}")
+        print("{user}")
 
 
 @app.cli.command()

@@ -33,12 +33,12 @@ class MqttClient:
 
     @staticmethod
     def handle_error(err_message: str, message: mqtt.MQTTMessage):
-        log(log.ERROR, f"Error: {message.topic}, {err_message}")
+        log(log.ERROR, "Error: %s, [%s]", message.topic, err_message)
 
     @staticmethod
     def on_device_message(device: Device, message: mqtt.MQTTMessage):
         msg_text = message.payload.decode("utf-8")
-        log(log.INFO, f"Device {device.name}: {msg_text}")
+        log(log.INFO, "Device [%s]: [%s]", device.name, msg_text)
 
     @staticmethod
     def on_message(client, user_data, message):
@@ -84,7 +84,7 @@ class MqttClient:
                 return
             device = Device(account_id=account.id, type=device_type, name=device_name)
             device.save()
-            log(log.INFO, f"New device created: {device.name}")
+            log(log.INFO, "New device created: %s", device)
 
         # Update device type
         elif device.type != device_type:
