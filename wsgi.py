@@ -32,22 +32,6 @@ def drop_db():
 
 
 @app.cli.command()
-def create_user():
-    """Create user command"""
-    # username = input("Username: ")
-
-    # while True:
-    #     password = input("Password: ")
-    #     password_retry = input("Retry password: ")
-    #     if password != password_retry:
-    #         print("Password mismached. try again.")
-    #         continue
-    #     break
-    # TODO user create
-    print("TODO")
-
-
-@app.cli.command()
 def user_list():
     """Get all users"""
     users = models.User.query.all()
