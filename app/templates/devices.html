@@ -17,15 +17,17 @@
           <th scope="col">Id</th>
           <th scope="col">Account</th>
           <th scope="col">Name</th>
+          <th scope="col">Type</th>
         </tr>
       </thead>
       <tbody class="device-dashboard">
         {% for device in devices.items%}
         <tr id="{{device.id}}">
           {% if not device.deleted %}
-            <td>{{ device.id }}</td>
-            <td>{{ device.account.mqtt_login }}</td>
-            <td>{{ device.name }}</td>
+          <td>{{ device.id }}</td>
+          <td>{{ device.account.user.username }}</td>
+          <td>{{ device.name }}</td>
+          <td>{{ device.type }}</td>
           {% endif %}
         </tr>
         {% endfor %}
