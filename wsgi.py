@@ -88,7 +88,7 @@ def write_topic(topic: str, value: int):
 @click.option("--value", default=1, help="data value")
 def test_value(account: str, name: str, value: int):
     """Set TEST_VALUE value"""
-    import json
+    # import json
     from app.controllers import MqttClient
     from app.models import Account
 
@@ -97,7 +97,8 @@ def test_value(account: str, name: str, value: int):
         log(log.ERROR, "Account [%s] not found", account)
         return
     client = MqttClient(client_id="shell", account=acc)
-    payload = json.dumps(dict(value=value), indent=2).encode()
+    # payload = json.dumps(dict(value=value), indent=2).encode()
+    payload = value
     log(log.INFO, "Payload [%s]", payload)
     client.publish(f"{account}/test_lamp/{name}", payload=payload)
 

@@ -1,6 +1,7 @@
 import os
 import json
 from dotenv import load_dotenv
+from flask import url_for
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -51,10 +52,15 @@ class BaseConfig(object):
     MAIL_PASSWORD = os.getenv("MAIL_PASSWORD", "no-password")
     MAIL_DEFAULT_SENDER = os.getenv("MAIL_DEFAULT_SENDER", "sender_name")
 
+    DEVICE_TYPE_TEMPLATE_MAP = {
+        "test_lamp": "device/test_lamp.html",
+    }
+
     @staticmethod
     def configure(app):
         # Implement this method to do further configuration on your app.
         pass
+
 
 
 class DevelopmentConfig(BaseConfig):

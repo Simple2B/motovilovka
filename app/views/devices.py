@@ -62,7 +62,12 @@ def device_page():
         return redirect(url_for("devices.devices_page"))
 
     # Get template HTML name from device type
-    template_path = f"device/{device.type}.html"
+    template_path = current_app.config["DEVICE_TYPE_TEMPLATE_MAP"].get(device.type)
+    if not template_path:
+        return redirect(url_for("devices.devices_page"))
+
+    if not template_path:
+        return redirect(url_for("devices.devices_page"))
 
     return render_template(
         template_path,

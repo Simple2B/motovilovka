@@ -25,7 +25,7 @@
         <tr id="{{device.id}}">
           {% if not device.deleted %}
           <td>{{ device.id }}</td>
-          <td>{{ device.account.user.username }}</td>
+          <td>{{ device.account.mqtt_login }}</td>
           <td>{{ device.name }}</td>
           <td>{{ device.type }}</td>
           {% endif %}

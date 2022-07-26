@@ -2,6 +2,7 @@ from flask.testing import FlaskClient
 from app import models as m
 from .mqtt import MqttTestClient
 from .utils import login, logout
+from flask import url_for
 
 
 def test_register_device(mqtt: MqttTestClient):
@@ -30,7 +31,7 @@ def test_register_device(mqtt: MqttTestClient):
 def test_show_devices(mqtt: MqttTestClient):
     http: FlaskClient = mqtt.http_client
     TEST_USER = "Test_User_{i}"
-    TEST_DEVICE_TYPE = "Test Type"
+    TEST_DEVICE_TYPE = "test_lamp"
     TEST_DEVICE_NAME = "Test Device Name {i}"
 
     TEST_USER_COUNT = 2
@@ -91,3 +92,23 @@ def test_show_devices(mqtt: MqttTestClient):
             assert device_name in html_text
             assert TEST_DEVICE_TYPE in html_text
         logout(http)
+
+    # Be sure user does not see not him devices
+    user: m.User = users[0]
+    else_users: list[m.User] = users[1:]
+    assert else_users
+
+    login(http, user.username, TEST_PASSWORD)
+    devices: list[m.Device] = m.Device.query.join(m.Account).filter_by(user_id=user.id).all()
+    assert devices
+
+    for device in devices:
+        res = http.get(f"/device?id={device.id}")
+        assert res.status_code == 200
+
+    other_devices: list[m.Device] = m.Device.query.join(m.Account).filter(m.Account.user_id != user.id).all()
+    assert other_devices
+
+    for other_device in other_devices:
+        res = http.get(f"/device?id={other_device.id}")
+        assert res.status_code != 200
