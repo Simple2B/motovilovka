@@ -1,10 +1,12 @@
 import pytest
+from flask.testing import FlaskClient
 from app import create_app, db
 from app.controllers import init_db
+from .mqtt import MqttTestClient
 
 
 @pytest.fixture
-def client(monkeypatch: pytest.MonkeyPatch):
+def client(monkeypatch: pytest.MonkeyPatch) -> FlaskClient:
     app = create_app(environment="testing")
     app.config["TESTING"] = True
 
@@ -27,3 +29,10 @@ def client(monkeypatch: pytest.MonkeyPatch):
         db.session.remove()
         db.drop_all()
         app_ctx.pop()
+
+
+@pytest.fixture
+def mqtt(client: FlaskClient) -> MqttTestClient:
+    mqtt_client = MqttTestClient()
+    mqtt_client.http_client = client
+    yield mqtt_client
