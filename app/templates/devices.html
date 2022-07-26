@@ -17,6 +17,7 @@
           <th scope="col">id</th>
           <th scope="col">User</th>
           <th scope="col">Name</th>
+          <th scope="col">Type</th>
         </tr>
       </thead>
       <tbody>
@@ -26,6 +27,7 @@
           <td>{{ device.id }}</td>
           <td>{{ device.account.user.username }}</td>
           <td>{{ device.name }}</td>
+          <td>{{ device.type }}</td>
           {% endif %}
         </tr>
         {% endfor %}
