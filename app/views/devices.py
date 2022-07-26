@@ -1,8 +1,10 @@
 from flask import (
     current_app,
+    redirect,
     render_template,
     Blueprint,
     request,
+    url_for
 )
 from flask_login import login_required, current_user
 from app.models import Device, User, Account
@@ -45,3 +47,25 @@ def device_search(query):
         page=page, per_page=current_app.config["PAGE_SIZE"]
     )
     return render_template("devices.html", devices=devices, query=query)
+
+
+@devices_blueprint.route("/device")
+@login_required
+def device_page():
+    device_id = request.args.get("id", type=int)
+    if device_id is None:
+        return redirect(url_for("devices.devices_page"))
+
+    device = Device.query.filter_by(id=device_id).join(Account).filter_by(user_id=current_user.id).first()
+
+    if not device:
+        return redirect(url_for("devices.devices_page"))
+
+    # Get template HTML name from device type
+    template_path = f"device/{device.type}.html"
+
+    return render_template(
+        template_path,
+        device=device,
+        mqtt_port=current_app.config["MOSQUITTO_EXTERNAL_WS_PORT"]
+    )

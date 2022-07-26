@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block links %}
+<link href="{{ url_for('static', filename='css/search.css') }}" rel="stylesheet" media="screen"/>
+{% endblock %}
+
+{% block body %}
+
+<h1>Device: {{device.name}}</h1>
+<script>
+    const mqttData = {
+        login: '{{ device.account.mqtt_login }}',
+        password: '{{ device.account.mqtt_password }}',
+        port: '{{ mqtt_port }}',
+        deviceType: '{{ device.type }}',
+        deviceName: '{{ device.name }}'
+    };
+</script>
+<script src="{{ url_for('static', filename='js/mqtt/mqtt.js')}}"></script>
+<script src="{{ url_for('static', filename='js/device/device.js')}}"></script>
+{% block device %}{% endblock %}
+
+{% endblock %}

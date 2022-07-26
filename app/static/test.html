@@ -12,36 +12,7 @@
     <input id="value" type="text" />
     <script>
       document.getElementById("clickMe").addEventListener("click", () => {
-        const value = document.getElementById("value").value;
-        const options = {
-          // Clean session
-          clean: true,
-          connectTimeout: 4000,
-          // Auth
-          clientId: "client_test",
-          username: "67WKQ9",
-          password: "F4UpgGE",
-        };
-        const client = mqtt.connect("ws://localhost:19001/mqtt", options);
-        client.on("connect", function () {
-          console.log("Connected");
-          client.subscribe("#", function (err) {
-            if (!err) {
-              client.publish(
-                "67WKQ9/BUTTON/TEST_BUT",
-                JSON.stringify({
-                  value: value,
-                })
-              );
-            }
-          });
-        });
-
-        client.on("message", function (topic, message) {
-          // message is Buffer
-          console.log(message.toString());
-          client.end();
-        });
+        
       });
     </script>
   </body>

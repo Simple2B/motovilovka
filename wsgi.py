@@ -99,7 +99,7 @@ def test_value(account: str, name: str, value: int):
     client = MqttClient(client_id="shell", account=acc)
     payload = json.dumps(dict(value=value), indent=2).encode()
     log(log.INFO, "Payload [%s]", payload)
-    client.publish(f"{account}/TEST_VALUE/{name}", payload=payload)
+    client.publish(f"{account}/test_lamp/{name}", payload=payload)
 
 
 if __name__ == "__main__":

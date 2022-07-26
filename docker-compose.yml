@@ -50,7 +50,7 @@ services:
       - 127.0.0.1:${MQTT_LOCAL_PORT}:1883
       - 127.0.0.1:${MQTT_LOCAL_WS_PORT}:9001
     volumes:
-      - mosquitto:/mosquitto/config
+      - mosquitto:/mosquitto/users
       - mosquitto:/mosquitto/data
     environment:
       MOSQUITTO_ADMIN_USER: ${MOSQUITTO_ADMIN_USER}

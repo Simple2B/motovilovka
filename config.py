@@ -40,6 +40,7 @@ class BaseConfig(object):
     MOSQUITTO_PORT = int(os.environ.get("MOSQUITTO_PORT", "1883"))
     MOSQUITTO_API_HOST = os.environ.get("MOSQUITTO_API_HOST", "localhost")
     MOSQUITTO_API_PORT = os.environ.get("MOSQUITTO_API_PORT", "8080")
+    MOSQUITTO_EXTERNAL_WS_PORT = os.environ.get("MOSQUITTO_EXTERNAL_WS_PORT", "9001")
 
     # Mail config
     MAIL_SERVER = os.getenv("MAIL_SERVER", "localhost")
