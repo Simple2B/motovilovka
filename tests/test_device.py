@@ -2,7 +2,6 @@ from flask.testing import FlaskClient
 from app import models as m
 from .mqtt import MqttTestClient
 from .utils import login, logout
-from flask import url_for
 
 
 def test_register_device(mqtt: MqttTestClient):

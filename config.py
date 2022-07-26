@@ -1,7 +1,6 @@
 import os
 import json
 from dotenv import load_dotenv
-from flask import url_for
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -60,7 +59,6 @@ class BaseConfig(object):
     def configure(app):
         # Implement this method to do further configuration on your app.
         pass
-
 
 
 class DevelopmentConfig(BaseConfig):
