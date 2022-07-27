@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-sleep 5
+echo wait 20 seconds for starting MQTT broker
+sleep 20
 poetry run flask db upgrade
-sleep 5
 echo start server
 flask mqtt

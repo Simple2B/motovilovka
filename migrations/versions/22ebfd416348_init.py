@@ -86,7 +86,7 @@ def upgrade():
             )
         ],
     )
-    mqtt_set_user(CFG.ADMIN_USER, CFG.ADMIN_PASS)
+    mqtt_set_user(CFG.MOSQUITTO_ADMIN_USER, CFG.MOSQUITTO_ADMIN_PASSWORD)
 
 
 def downgrade():

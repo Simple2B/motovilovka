@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-echo sleep 5
+echo wait 20 seconds for starting MQTT broker
+sleep 20
 flask db upgrade
-echo sleep 5
 flask run --host=0.0.0.0 --port=80
