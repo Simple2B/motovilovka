@@ -74,7 +74,6 @@ def upgrade():
         m.User.__table__,
         [
             dict(
-                id=1000000,
                 username=CFG.ADMIN_USER,
                 email=CFG.ADMIN_EMAIL,
                 password_hash=generate_password_hash(CFG.ADMIN_PASS),

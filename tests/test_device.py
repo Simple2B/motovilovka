@@ -98,16 +98,20 @@ def test_show_devices(mqtt: MqttTestClient):
     assert else_users
 
     login(http, user.username, TEST_PASSWORD)
-    devices: list[m.Device] = m.Device.query.join(m.Account).filter_by(user_id=user.id).all()
+    devices: list[m.Device] = (
+        m.Device.query.join(m.Account).filter_by(user_id=user.id).all()
+    )
     assert devices
 
     for device in devices:
-        res = http.get(f"/device?id={device.id}")
+        res = http.get(f"/device/{device.uid}")
         assert res.status_code == 200
 
-    other_devices: list[m.Device] = m.Device.query.join(m.Account).filter(m.Account.user_id != user.id).all()
+    other_devices: list[m.Device] = (
+        m.Device.query.join(m.Account).filter(m.Account.user_id != user.id).all()
+    )
     assert other_devices
 
     for other_device in other_devices:
-        res = http.get(f"/device?id={other_device.id}")
+        res = http.get(f"/device/{other_device.uid}")
         assert res.status_code != 200

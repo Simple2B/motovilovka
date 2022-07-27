@@ -103,5 +103,9 @@ def test_value(account: str, name: str, value: int):
     client.publish(f"{account}/test_lamp/{name}", payload=payload)
 
 
-if __name__ == "__main__":
-    app.run()
+@app.cli.command()
+def update_mqtt_admin():
+    from config import BaseConfig as CFG
+    from app.controllers.mqtt import mqtt_set_user
+
+    mqtt_set_user(CFG.MOSQUITTO_ADMIN_USER, CFG.MOSQUITTO_ADMIN_PASSWORD)

@@ -1,6 +1,7 @@
 from flask import current_app, redirect, render_template, Blueprint, request, url_for
 from flask_login import login_required, current_user
 from app.models import Device, User, Account
+from app.logger import log
 
 devices_blueprint = Blueprint("devices", __name__)
 
@@ -46,23 +47,22 @@ def device_search(query):
     return render_template("devices.html", devices=devices, query=query)
 
 
-@devices_blueprint.route("/device/<int:device_id>")
+@devices_blueprint.route("/device/<device_uid>")
 @login_required
-def device_page(device_id: int):
-    device: Device = Device.query.get(device_id)
+def device_page(device_uid: str):
+    device: Device = Device.query.filter_by(uid=device_uid).first()
+    if not device:
+        log(log.ERROR, "Device [%s] not found", device_uid)
+        return redirect(url_for("devices.devices_page"))
 
-    if not device and device.account.user.id != current_user.id:
-        # TODO logs
+    if device.account.user.id != current_user.id:
+        log(log.ERROR, "Access denied to device [%s]", device_uid)
         return redirect(url_for("devices.devices_page"))
 
     # Get template HTML name from device type
     template_path = current_app.config["DEVICE_TYPE_TEMPLATE_MAP"].get(device.type)
     if not template_path:
-        # TODO logs
-        return redirect(url_for("devices.devices_page"))
-
-    if not template_path:
-        # TODO logs
+        log(log.WARNING, "Unknown device type [%s]", device.type)
         return redirect(url_for("devices.devices_page"))
 
     return render_template(

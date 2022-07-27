@@ -1,7 +1,7 @@
 import logging
 import sys
 
-LOGGER_NAME = "SimpleAppLog"
+LOGGER_NAME = "Motovilovka"
 
 
 class Logger(object):
