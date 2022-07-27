@@ -4,7 +4,6 @@ env/
 .venv/
 .pytest_cache/
 .db_dump/*
-mosquitto/
 /backup/*.tgz
 
 # ignore files

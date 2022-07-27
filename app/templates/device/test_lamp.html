@@ -1,12 +1,10 @@
-{% extends "device/_device.html" %}
-
-{% block device %}
+{% extends "device/_device.html" %} {% block device %}
 
 <h2>I'm lamp</h2>
 
 <button id="increase">+</button>
-<input id="lamp-value">
+<input id="lamp-value" />
 <button id="decrease">-</button>
 
-<script src="static/js/device/lamp.js"></script>
+<script src="{{ url_for('static', filename='js/device/lamp.js') }}"></script>
 {% endblock %}
