@@ -1,9 +1,4 @@
 class LampDevice extends Device {
-    constructor(...args) {
-        super(...args);
-        this.listeners = [];
-    }
-
     onDeviceMessage(msg) {
         this.inputValue.value = msg.toString();
     }
