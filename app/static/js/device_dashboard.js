@@ -3,7 +3,8 @@ document.addEventListener('DOMContentLoaded', (evt) => {
     
     for (let deviceRow of deviceDashboard.children) {
         const deviceId = deviceRow.getAttribute('id');
-        deviceRow.addEventListener('click', (evt) => {
+        const deviceTypeBtn = deviceRow.querySelector('.btn-device-type')
+        deviceTypeBtn.addEventListener('click', (evt) => {
             window.open('device?id=' + deviceId, '_blank').focus();
         });
     }

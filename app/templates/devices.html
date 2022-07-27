@@ -27,7 +27,9 @@
           <td>{{ device.id }}</td>
           <td>{{ device.account.mqtt_login }}</td>
           <td>{{ device.name }}</td>
-          <td>{{ device.type }}</td>
+          <td><button class="btn-device-type"
+            {% if device.type not in device_known_types %}disabled{% endif %}
+          >{{ device.type }}</button></td>
           {% endif %}
         </tr>
         {% endfor %}

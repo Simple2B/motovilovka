@@ -1,55 +1,45 @@
 class Device {
-	constructor () {
+	constructor (username, password, hostname, port) {
+		this.mqttUrl = "ws://" + hostname + ":" + port + "/mqtt";
 		this.messageQueue = [];
-	}
-	
-	onDeviceMessage(message) {
-		console.log('msg:', msg)
-	} 
+		this.events = {};
+		this.deviceTopic = [username, password, mqttData.deviceName].join('/');
+		this.mqttClient = mqtt.connect(this.mqttUrl, {
+			clean: true,
+			connectTimeout: 4000,
+			clientId: 'browser-client-' + uuidv4(),
+			username: username,
+    		password: password,
+		});
 
-	publishMessage (msg) {
-		this.messageQueue.push(msg)
+		this.mqttClient.on('connect', () => {
+			console.log('connected.');
+			this.mqttClient.subscribe(this.deviceTopic, (err) => {
+				if (err){
+					console.log('Error on subscription:', err);
+				}
+			});
+
+			this.messageQueue.forEach(this.#sendMessage);
+			this.sendMessage = this.#sendMessage;
+
+			this.mqttClient.on('message', (topic, msg, packet) => {
+				this.onDeviceMessage(msg);
+			});
+		});
+
+		
 	}
 
+	sendMessage(msg) {
+		this.messageQueue.push(msg);
+	}
+
+	#sendMessage(msg) {
+		this.mqttClient.publish(this.deviceTopic, msg);
+	}
+
+	onDeviceMessage(msg) {
+		console.log('Receive message: ', msg)
+	}
 }
-
-const device = new Device();
-
-document.addEventListener('DOMContentLoaded', (evt) => {
-	const options = {
-  	// Clean session
-  	clean: true,
-    connectTimeout: 4000,
-    // Auth
-		// TODO client test UUID4
-    clientId: "browser_test",
-    username: mqttData.login,
-    password: mqttData.password,
-  };
-
-	const mqttUrl = "ws://" + window.location.hostname + ":" + mqttData.port + "/mqtt";
-	const client = mqtt.connect(mqttUrl, options);
-	const device_topic = [mqttData.login, mqttData.deviceType, mqttData.deviceName].join('/');
-
-	client.on('connect', () => {
-		console.log('Connected to mqtt-broker');
-		client.subscribe('#', (err) => {
-			if (err) {
-				console.log("Cannot subscribe: " + err);
-				return;
-			}
-		})
-
-		client.on('message', (topic, msg, packet) => {
-			device.onDeviceMessage(msg);
-		});
-
-		device.publishMessage = (msg) => {
-			client.publish(device_topic, msg);
-		}
-
-		device.messageQueue.forEach((msg) => {
-			device.publishMessage(msg);
-		});
-	});
-});

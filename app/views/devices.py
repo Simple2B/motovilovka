@@ -25,7 +25,11 @@ def devices_page():
 
     devices = query.paginate(page=page, per_page=current_app.config["PAGE_SIZE"])
 
-    return render_template("devices.html", devices=devices)
+    return render_template(
+        "devices.html",
+        devices=devices,
+        device_known_types=current_app.config["DEVICE_TYPE_TEMPLATE_MAP"]
+    )
 
 
 @devices_blueprint.route("/device_search/<query>")
@@ -72,5 +76,5 @@ def device_page():
     return render_template(
         template_path,
         device=device,
-        mqtt_port=current_app.config["MOSQUITTO_EXTERNAL_WS_PORT"]
+        mqtt_port=current_app.config["MOSQUITTO_EXTERNAL_WS_PORT"],
     )
