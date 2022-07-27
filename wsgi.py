@@ -1,4 +1,5 @@
 #!/user/bin/env python
+import json
 import click
 from app import create_app, db, models
 from app.logger import log
@@ -97,8 +98,7 @@ def test_value(account: str, name: str, value: int):
         log(log.ERROR, "Account [%s] not found", account)
         return
     client = MqttClient(client_id="shell", account=acc)
-    # payload = json.dumps(dict(value=value), indent=2).encode()
-    payload = value
+    payload = json.dumps(dict(value=value), indent=2).encode()
     log(log.INFO, "Payload [%s]", payload)
     client.publish(f"{account}/test_lamp/{name}", payload=payload)
 
