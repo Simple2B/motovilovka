@@ -13,7 +13,7 @@ class Device {
       mqttData.deviceName,
     ].join("/");
     this.mqttClient = mqtt.connect(this.mqttUrl, {
-      clean: true,
+      clean: false,
       connectTimeout: 4000,
       clientId: "browser-client-" + uuidv4(),
       username: username,
