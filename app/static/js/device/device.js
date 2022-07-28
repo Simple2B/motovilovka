@@ -1,6 +1,10 @@
 class Device {
   constructor(username, password, hostname, port) {
-    this.mqttUrl = "ws://" + hostname + ":" + port + "/mqtt";
+    if (hostname.includes("localhost") || hostname.includes("127.0.0.1")) {
+      this.mqttUrl = `ws://${hostname}:${port}/mqtt`;
+    } else {
+      this.mqttUrl = `wss://${hostname}:${port}/mqtt`;
+    }
     this.messageQueue = [];
     this.events = {};
     this.deviceTopic = [
