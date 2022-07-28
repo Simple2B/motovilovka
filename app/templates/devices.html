@@ -15,7 +15,6 @@
       <thead>
         <tr>
           <th scope="col">Id</th>
-          <th scope="col">Account</th>
           <th scope="col">Name</th>
           <th scope="col">Type</th>
         </tr>
@@ -23,13 +22,15 @@
       <tbody class="device-dashboard">
         {% for device in devices.items%}
         <tr id="{{device.id}}">
-          {% if not device.deleted %}
           <td>{{ device.id }}</td>
-          <td>{{ device.account.mqtt_login }}</td>
           <td>{{ device.name }}</td>
-          <td><button class="btn-device-type"
-            {% if device.type not in device_known_types %}disabled{% endif %}
-          >{{ device.type }}</button></td>
+          {% if device.type not in device_known_types %}
+          <td>{{ device.type }}</td>
+          {% else %}
+          <td>
+            <!-- prettier-ignore -->
+            <a href="{{url_for('devices.device_page', device_uid=device.uid)}}">{{ device.type }}</a>
+          </td>
           {% endif %}
         </tr>
         {% endfor %}

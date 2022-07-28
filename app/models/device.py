@@ -1,7 +1,12 @@
 from datetime import datetime
+from uuid import uuid4
 from sqlalchemy.orm import relationship
 from app import db
 from app.models.utils import ModelMixin
+
+
+def gen_device_uid() -> str:
+    return str(uuid4())
 
 
 class Device(db.Model, ModelMixin):
@@ -14,6 +19,7 @@ class Device(db.Model, ModelMixin):
     name = db.Column(db.String(128), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now)
     deleted = db.Column(db.Boolean, default=False)
+    uid = db.Column(db.String(64), default=gen_device_uid)
 
     account = relationship("Account")
 

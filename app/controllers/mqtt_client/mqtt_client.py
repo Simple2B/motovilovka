@@ -49,14 +49,14 @@ class MqttClient:
     def on_message(client: mqtt.Client, user_data: Any, message: MQTTMessage):
         # Check for topic length
         backslash_count = message.topic.count("/")
-        if backslash_count != 2:
+        if backslash_count < 2:
             MqttClient.handle_error("Invalid topic name", message)
             return
 
         # Get device data
         # TODO critical code! Need to optimize. Make device data getting in topic length check "code above"
         # TODO best way limit topics subpath on MQTT broker layer
-        device_user, device_type, device_name = message.topic.split("/")
+        device_user, device_type, device_name = message.topic.split("/")[:3]
         for topic_path in (device_type, device_name):
             if not topic_path:
                 MqttClient.handle_error("Invalid topic name", message)

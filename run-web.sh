@@ -1,3 +1,5 @@
 #!/usr/bin/env bash
-poetry run flask db upgrade
-poetry run flask run --host=0.0.0.0 --port=80
+echo wait 20 seconds for starting MQTT broker
+sleep 20
+flask db upgrade
+flask run --host=0.0.0.0 --port=80

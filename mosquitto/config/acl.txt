@@ -1,0 +1,4 @@
+user admin
+topic readwrite #
+
+pattern readwrite %u/#

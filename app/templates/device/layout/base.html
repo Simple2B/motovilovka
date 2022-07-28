@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Portal" />
+    <meta name="author" content="Simple2B" />
+    <title>{{ config.APP_NAME }}</title>
+    {% block meta %}{% endblock %}
+
+    <!-- Bootstrap core CSS -->
+    <link
+      href="{{ url_for('static', filename='css/bootstrap.min.css') }}"
+      rel="stylesheet"
+      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+      crossorigin="anonymous"
+    />
+
+    <!-- Favicons -->
+    <link
+      rel="icon"
+      href="{{ url_for('static', filename='img/favicons/favicon.ico') }}"
+    />
+    <meta name="theme-color" content="#7952b3" />
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+
+    <!-- Main CSS -->
+    <link
+      href="{{ url_for('static', filename='css/main.css') }}"
+      rel="stylesheet"
+      media="screen"
+    />
+    {% block links %}{% endblock %}
+  </head>
+
+  <body>
+    <!-- Header -->
+    {% include 'device/layout/header.html' %}
+    <div class="container-fluid">
+      <div class="row">
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %} {% if
+        messages %} {% for category, message in messages %}
+        <div
+          class="hit_flash d-flex justify-content-between alert alert-{{ category }} alert-dismisible"
+        >
+          <div></div>
+          <p>{{ message }}</p>
+          <div class="flash_inner">
+            <button
+              type="button"
+              class="close d-flex justify-content-center align-items-center me-3"
+              data-dismiss="alert"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        </div>
+        {% endfor %} {% endif %} {% endwith %}
+        <!-- Main Content -->
+        {% block content %}{% endblock %}
+      </div>
+    </div>
+
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+      <h1>Device: {{device.name}}</h1>
+      <script>
+        const mqttData = {
+          login: "{{ device.account.mqtt_login }}",
+          password: "{{ device.account.mqtt_password }}",
+          port: "{{ mqtt_port }}",
+          deviceType: "{{ device.type }}",
+          deviceName: "{{ device.name }}",
+        };
+      </script>
+      <script src="{{ url_for('static', filename='js/mqtt/mqtt.js')}}"></script>
+      <script src="{{ url_for('static', filename='js/uuidv4.min.js')}}"></script>
+      <script src="{{ url_for('static', filename='js/device/device.js')}}"></script>
+      {% block device %}{% endblock %}
+    </main>
+
+    <!-- scripts -->
+    <script
+      src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"
+      integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="{{ url_for('static', filename='js/feather.min.js') }}"
+      integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"
+      integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="{{ url_for('static', filename='js/main.js') }}"
+      type="text/javascript"
+    ></script>
+    {% block scripts %}{% endblock %}
+  </body>
+</html>
