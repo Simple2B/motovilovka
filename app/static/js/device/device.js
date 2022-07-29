@@ -17,6 +17,11 @@ class Device {
       password: mqttData.password,
     });
 
+    this.messageOpt = {
+      qos: 2,
+      retain: true,
+    };
+
     this.mqttClient.on("connect", () => {
       console.log("connected.");
       this.mqttClient.subscribe(`${this.topic}/#`, (err) => {
@@ -39,7 +44,7 @@ class Device {
   }
 
   #sendMessage(msg) {
-    this.mqttClient.publish(this.topic, msg);
+    this.mqttClient.publish(this.deviceTopic, msg, this.messageOpt);
   }
 
   onDeviceMessage(msg) {
