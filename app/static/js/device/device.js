@@ -1,28 +1,25 @@
 class Device {
-  constructor(username, password, hostname, port) {
-    if (hostname.includes("localhost") || hostname.includes("127.0.0.1")) {
-      this.mqttUrl = `ws://${hostname}:${port}/mqtt`;
-    } else {
-      this.mqttUrl = `wss://${hostname}:${port}/mqtt`;
-    }
+  constructor() {
+    this.mqttUrl = mqttData.webSocketURL;
+
     this.messageQueue = [];
     this.events = {};
-    this.deviceTopic = [
-      username,
+    this.topic = [
+      mqttData.login,
       mqttData.deviceType,
       mqttData.deviceName,
     ].join("/");
     this.mqttClient = mqtt.connect(this.mqttUrl, {
-      clean: true,
+      clean: false,
       connectTimeout: 4000,
-      clientId: "browser-client-" + uuidv4(),
-      username: username,
-      password: password,
+      clientId: `browser-client-${mqttData.login}-${+new Date()}`,
+      username: mqttData.login,
+      password: mqttData.password,
     });
 
     this.mqttClient.on("connect", () => {
       console.log("connected.");
-      this.mqttClient.subscribe(this.deviceTopic, (err) => {
+      this.mqttClient.subscribe(`${this.topic}/#`, (err) => {
         if (err) {
           console.log("Error on subscription:", err);
         }
@@ -32,7 +29,7 @@ class Device {
       this.sendMessage = this.#sendMessage;
 
       this.mqttClient.on("message", (topic, msg, packet) => {
-        this.onDeviceMessage(msg);
+        this.onDeviceMessage(topic, msg, packet);
       });
     });
   }
@@ -42,10 +39,14 @@ class Device {
   }
 
   #sendMessage(msg) {
-    this.mqttClient.publish(this.deviceTopic, msg);
+    this.mqttClient.publish(this.topic, msg);
   }
 
   onDeviceMessage(msg) {
     console.log("Receive message: ", msg);
+  }
+
+  publish(topic, msg) {
+    this.mqttClient.publish(`${this.topic}/${topic}`, msg);
   }
 }
