@@ -62,6 +62,11 @@ class User(db.Model, UserMixin, ModelMixin):
         if user is not None and check_password_hash(user.password, password):
             return user
 
+    def reset_password(self):
+        self.password_hash = ""
+        self.reset_password_uid = gen_password_reset_id()
+        self.save()
+
     def __str__(self) -> str:
         return self.__repr__()
 
