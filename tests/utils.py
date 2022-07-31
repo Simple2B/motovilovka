@@ -4,8 +4,11 @@ from config import BaseConfig as conf
 from app.controllers.database import TEST_PASS
 
 
-def register(username, password=TEST_PASS):
-    user = User(username=username, password=password)
+def register(username, password=TEST_PASS, email=None):
+    if not email:
+        email = f"{username}@gmail.com"
+
+    user = User(username=username, password=password, email=email)
     user.save()
     return user.id
 

@@ -22,6 +22,8 @@ def devices_page():
     return render_template(
         "devices.html",
         devices=devices,
+        accounts=current_user.accounts,
+        mqtt_port=current_app.config["MOSQUITTO_EXTERNAL_WS_PORT"],
         device_known_types=current_app.config["DEVICE_TYPE_TEMPLATE_MAP"],
     )
 
