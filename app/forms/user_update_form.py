@@ -43,11 +43,10 @@ FORBIDDEN_SYMBOLS = [
 
 class UserUpdateForm(FlaskForm):
     username = StringField("Username", [DataRequired()])
-    password = PasswordField("Password", [DataRequired()])
+    password = PasswordField("Password")
     password_confirm = PasswordField(
         "Confirm Password",
         validators=[
-            DataRequired(),
             EqualTo("password", message="Password do not match."),
         ],
     )

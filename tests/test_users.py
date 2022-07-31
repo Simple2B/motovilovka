@@ -87,6 +87,28 @@ def test_update_user(client: FlaskClient):
     assert user.role.value == TEST_ROLE
 
 
+def test_update_user_empty_pass(client: FlaskClient):
+    login(client)
+    TEST_USER_ID = 5
+    TEST_USERNAME = "TEST_USERNAME"
+    TEST_ROLE = 1
+
+    res = client.post(
+        f"/user_update/{TEST_USER_ID}",
+        data=dict(
+            username=TEST_USERNAME,
+            role=TEST_ROLE,
+        ),
+        follow_redirects=True,
+    )
+    assert res.status_code == 200
+
+    user: User = User.query.filter_by(id=TEST_USER_ID).first()
+
+    assert user.username == TEST_USERNAME
+    assert user.role.value == TEST_ROLE
+
+
 def test_user_search(client: FlaskClient):
     login(client)
     response = client.get("/user_search/r_2")
