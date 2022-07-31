@@ -24,7 +24,7 @@ def login():
     form = LoginForm(request.form)
     if form.validate_on_submit():
         user: m.User = m.User.authenticate(form.username.data, form.password.data)
-        flash("You are successfully logged in!", "info")
+        # flash("You are successfully logged in!", "info")
         if user:
             login_user(user)
             return redirect(url_for("main.index"))

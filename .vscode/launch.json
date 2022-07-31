@@ -8,7 +8,7 @@
             "name": "Launch Chrome",
             "request": "launch",
             "type": "chrome",
-            "url": "http://127.0.0.1:5000/devices",
+            "url": "http://127.0.0.1:5000/",
             "webRoot": "${workspaceFolder}/app/"
         },
         {
