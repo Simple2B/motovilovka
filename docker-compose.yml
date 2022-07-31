@@ -59,21 +59,21 @@ services:
       MOSQUITTO_ADMIN_PASSWORD: ${MOSQUITTO_ADMIN_PASSWORD}
       API_PORT: ${MOSQUITTO_API_PORT}
 
-  # backup:
-  #   build: ./pg-backup
-  #   restart: always
-  #   volumes:
-  #     - ./${BACKUP_DIR}:/backup
-  #   links:
-  #     - db
-  #   environment:
-  #     SCHEDULE: "@daily"
-  #     POSTGRES_DATABASE: db
-  #     POSTGRES_HOST: db
-  #     POSTGRES_USER: postgres
-  #     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-  #     POSTGRES_EXTRA_OPTS: "--schema=public --blobs"
-  #     DAYS_HISTORY: 15
+  backup:
+    build: ./pg-backup
+    restart: always
+    volumes:
+      - ./${BACKUP_DIR}:/backup
+    links:
+      - db
+    environment:
+      SCHEDULE: "@daily"
+      POSTGRES_DATABASE: db
+      POSTGRES_HOST: db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_EXTRA_OPTS: "--schema=public --blobs"
+      DAYS_HISTORY: 15
 
 volumes:
   mosquitto_users:
