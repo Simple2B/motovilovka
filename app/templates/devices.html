@@ -14,7 +14,6 @@
     <table class="table table-striped table-sm">
       <tbody class="device-dashboard">
         {% for device in devices.items%}
-        < id="{{device.id}}">
           {% if device.type not in device_known_types %}
           <td>{{ device.alias if device.alias else device.name }}</td>
           {% else %}
@@ -24,7 +23,11 @@
               {{ device.alias if device.alias else device.name }}
             </a>
           </td>
-          <td><span data-feather="edit"></span></td>
+          <td>
+            <a href="{{url_for('devices.device_edit', device_uid=device.uid)}}">
+              <span data-feather="edit"></span>
+            </a>
+          </td>
           {% endif %}
         </tr>
         {% endfor %}
