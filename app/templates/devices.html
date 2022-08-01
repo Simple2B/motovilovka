@@ -8,31 +8,25 @@
   </div>
   <div class="table-responsive">
     <table class="table table-striped table-sm">
-      <!-- <thead>
-        <tr>
-          <th scope="col">Collapse</th>
-          <th scope="col">Name</th>
-          <th scope="col">Edit</th>
-          <th scope="col">Connection</th>
-        </tr>
-      </thead> -->
       <tbody class="device-dashboard">
         {% for device in devices.items%}
-        <tr class="account-{{ device.account.mqtt_login }}">
-          <!-- <td>&#8862;</td> -->
-          <td>&#8865;</td>
-          <td class="device-name" name="{{device.name}}">
-            {% if device.type not in device_known_types %}
+        {% if device.type not in device_known_types %}
+        <td>{{ device.alias if device.alias else device.name }}</td>
+        {% else %}
+        <td>
+          <!-- prettier-ignore -->
+          <a href="{{url_for('devices.device_page', device_uid=device.uid)}}">
             {{ device.alias if device.alias else device.name }}
-            {% else %}
-            <!-- prettier-ignore -->
-            <a href="{{url_for('devices.device_page', device_uid=device.uid)}}"> {{ device.alias if device.alias else
-              device.name }} </a>
-            {% endif %}
-          </td>
-          <td>Edit button</td>
-          <!-- <td class="indicator">&#128246</td> -->
-          <td class="emoji-icon">&#128246;</td>
+          </a>
+        </td>
+        <td>
+          <a href="{{url_for('devices.device_edit', device_uid=device.uid)}}">
+            <span data-feather="edit"></span>
+          </a>
+        </td>
+        <td>Edit button</td>
+        <!-- <td class="indicator">&#128246</td> -->
+        <td class="emoji-icon">&#128246;</td>
         </tr>
         {% endfor %}
       </tbody>

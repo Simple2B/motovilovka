@@ -1,0 +1,22 @@
+<!-- prettier-ignore -->
+{% extends "device/layout/base.html" %}
+{% block body %}
+<h2 class="display-6">
+  <a href="{{url_for('devices.device_edit', device_uid=device.uid)}}">
+    {{device.alias if device.alias else device.name}}
+  </a>
+</h2>
+<script>
+  const mqttData = {
+    login: "{{ device.account.mqtt_login }}",
+    password: "{{ device.account.mqtt_password }}",
+    deviceType: "{{ device.type }}",
+    deviceName: "{{ device.name }}",
+    webSocketURL: "{{ config.MQTT_WS_URL }}",
+  };
+</script>
+<script src="{{ url_for('static', filename='js/mqtt/mqtt.js')}}"></script>
+<script src="{{ url_for('static', filename='js/device/device.js')}}"></script>
+<!-- prettier-ignore -->
+{% block device %}{% endblock %}
+{% endblock %}
