@@ -30,9 +30,9 @@ class SocketDevice extends Device {
       case /relay\/state/i.test(name):
         this.setSwitch("relayState", +value);
         break;
-      case /status/i.test(name):
-        this.setInputHTML("status", value.trim());
-        break;
+      // case /status/i.test(name):
+      //   this.setInputHTML("status", value.trim());
+      //   break;
       default:
         console.log(`unknown key: ${name}=[${value}]`);
         break;
