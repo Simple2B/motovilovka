@@ -8,7 +8,7 @@
             "name": "Launch Chrome",
             "request": "launch",
             "type": "chrome",
-            "url": "http://127.0.0.1:5000/",
+            "url": "http://127.0.0.1:5002/",
             "webRoot": "${workspaceFolder}/app/"
         },
         {
@@ -22,7 +22,9 @@
                 "FLASK_DEBUG": "1"
             },
             "args": [
-                "run"
+                "run",
+                "--port",
+                "5002"
             ],
             "jinja": true
         },

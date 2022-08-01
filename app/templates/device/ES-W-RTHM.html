@@ -1,4 +1,14 @@
-{% extends "device/layout/base.html" %} {% block device %}
+{% extends "device/layout/base.html" %}
+<!-- prettier-ignore -->
+{% block links %}
+<link
+  href="{{ url_for('static', filename='css/cool/switch.css') }}"
+  rel="stylesheet"
+  media="screen"
+/>
+{% endblock %}
+<!-- prettier-ignore -->
+{% block device %}
 <table class="table">
   <tbody>
     <tr>
@@ -28,8 +38,8 @@
     <tr>
       <th scope="row">Relay State</th>
       <td>
-        <div class="form-check form-switch">
-          <input class="form-check-input" type="checkbox" id="relayState" />
+        <div class="form-check form-switch cool-switch">
+          <input class="form-check-input" type="checkbox" id="cool-switch-1" />
         </div>
       </td>
     </tr>
