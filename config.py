@@ -41,6 +41,7 @@ class BaseConfig(object):
     MOSQUITTO_API_HOST = os.environ.get("MOSQUITTO_API_HOST", "localhost")
     MOSQUITTO_API_PORT = os.environ.get("MOSQUITTO_API_PORT", "8080")
     MOSQUITTO_EXTERNAL_WS_PORT = os.environ.get("MOSQUITTO_EXTERNAL_WS_PORT", "9001")
+    MQTT_WS_URL = os.environ.get("MQTT_WS_URL", "ws://localhost:19001/mqtt")
 
     # Mail config
     MAIL_SERVER = os.getenv("MAIL_SERVER", "localhost")
@@ -53,7 +54,7 @@ class BaseConfig(object):
 
     DEVICE_TYPE_TEMPLATE_MAP = {
         "test_lamp": "device/test_lamp.html",
-        "ES-W-RTHM": "device/smart_socket.html"
+        "ES-W-RTHM": "device/ES-W-RTHM.html",
     }
 
     @staticmethod
@@ -75,8 +76,7 @@ class DevelopmentConfig(BaseConfig):
     MOSQUITTO_API_PORT = os.environ.get("DEV_MOSQUITTO_API_PORT", "8080")
     MOSQUITTO_HOST = os.environ.get("DEV_MOSQUITTO_HOST", "mqtt")
     MOSQUITTO_PORT = int(os.environ.get("DEV_MOSQUITTO_PORT", "1883"))
-
-    URL_JAVA_SRV = os.environ.get("DEV_URL_JAVA_SRV", None)
+    MQTT_WS_URL = os.environ.get("DEV_MQTT_WS_URL", "ws://localhost:19001/mqtt")
 
 
 class TestingConfig(BaseConfig):
@@ -94,6 +94,8 @@ class TestingConfig(BaseConfig):
 
 class ProductionConfig(BaseConfig):
     """Production configuration."""
+
+    DEBUG = False
 
     SQLALCHEMY_DATABASE_URI = os.environ.get(
         "DATABASE_URL", "sqlite:///" + os.path.join(BASE_DIR, "database.sqlite3")

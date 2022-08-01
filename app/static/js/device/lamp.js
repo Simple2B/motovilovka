@@ -1,5 +1,5 @@
 class LampDevice extends Device {
-  onDeviceMessage(msg) {
+  onDeviceMessage(topic, msg, packet) {
     this.inputValue.value = msg.toString();
   }
 

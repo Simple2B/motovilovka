@@ -5,14 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Launch Chrome",
-            "request": "launch",
-            "type": "chrome",
-            "url": "http://localhost:7080",
-            "webRoot": "${workspaceFolder}/app"
-        },
-        {
-            "name": "Flask run",
+            "name": "Debug",
             "type": "python",
             "request": "launch",
             "module": "flask",
@@ -26,7 +19,15 @@
                 "--port",
                 "7080"
             ],
-            "jinja": true
+            "jinja": true,
+            "justMyCode": false
+        },
+        {
+            "name": "Launch Chrome",
+            "request": "launch",
+            "type": "chrome",
+            "url": "http://127.0.0.1:7080/",
+            "webRoot": "${workspaceFolder}/app/"
         },
         {
             "name": "mqtt listen",

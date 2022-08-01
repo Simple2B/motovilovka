@@ -123,7 +123,7 @@ class GlobalDeviceListener {
 document.addEventListener("DOMContentLoaded", async (evt) => {
   const globalDeviceListener = await new GlobalDeviceListener(location.hostname);
   const devicesHTML = document.querySelector('.device-dashboard').children;
-  
+
   for (let deviceColumn of devicesHTML){
     const accountLogin = deviceColumn.getAttribute('class').substring("account-".length);
     const deviceName = deviceColumn.querySelector('.device-name').getAttribute('name');

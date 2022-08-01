@@ -22,6 +22,7 @@ class MqttClient:
         self.client = mqtt.Client(
             client_id=f"{client_id}-{uuid4()}",
             reconnect_on_failure=False,
+            clean_session=False,
         )
 
         # set callbacks

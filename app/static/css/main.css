@@ -1,7 +1,4 @@
 /* custom css */
-* {
-  border-radius: 0 !important;
-}
 
 body {
   font-size: 0.875rem;
@@ -106,7 +103,9 @@ body {
   margin: 10px;
 }
 
-.mobile_balance {display: none;}
+.mobile_balance {
+  display: none;
+}
 
 .form-control-dark {
   color: #fff;
@@ -121,7 +120,7 @@ body {
 
 .hit_flash {
   margin: 0;
-  padding: 15px 0 0 0!important;
+  padding: 15px 0 0 0 !important;
   color: white;
   font-weight: 500;
 }
@@ -133,7 +132,7 @@ body {
   color: white;
   font-weight: 500;
   border: 2px solid white;
-  border-radius: 3px!important;
+  border-radius: 3px !important;
 }
 
 .hit_flash button:hover {
@@ -145,28 +144,28 @@ body {
 }
 
 .invisible {
-  display: none!important;
+  display: none !important;
 }
 
 .page_button {
-  border-radius: 5px!important;
+  border-radius: 5px !important;
 }
 
 .alert-info {
-  background: #66d9ff!important;
+  background: #66d9ff !important;
 }
 
 .alert-danger {
-  background: #ea3333!important;
+  background: #ea3333 !important;
 }
 
 .close {
-  padding: 5px 6px 7px 5px!important;
+  padding: 5px 6px 7px 5px !important;
 }
 
 @media screen and (max-width: 768px) {
   .mobile_nav_row {
-    width: 100%!important;
+    width: 100% !important;
     display: flex;
     justify-content: space-between;
   }

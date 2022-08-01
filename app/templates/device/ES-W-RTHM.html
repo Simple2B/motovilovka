@@ -1,0 +1,44 @@
+{% extends "device/layout/base.html" %} {% block device %}
+<table class="table">
+  <tbody>
+    <tr>
+      <th scope="row"></th>
+      <td id="onlineStatus">-</td>
+    </tr>
+    <tr>
+      <th scope="row">Temperature</th>
+      <td id="temperature">-</td>
+    </tr>
+    <tr>
+      <th scope="row">Humidity</th>
+      <td id="humidity">-</td>
+    </tr>
+    <tr>
+      <th scope="row">Motion State</th>
+      <td id="motionState">-</td>
+    </tr>
+    <tr>
+      <th scope="row">Button State</th>
+      <td id="buttonState">-</td>
+    </tr>
+    <!-- <tr>
+      <th scope="row">Relay State</th>
+      <td id="relayState">-</td>
+    </tr> -->
+    <tr>
+      <th scope="row">Relay State</th>
+      <td>
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" id="relayState" />
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <th scope="row">Status</th>
+      <td id="status">-</td>
+    </tr>
+  </tbody>
+</table>
+
+<script src="{{ url_for('static', filename='js/device/ES-W-RTHM.js') }}"></script>
+{% endblock %}

@@ -85,7 +85,8 @@ def user_update(user_id: int):
 
     if form.validate_on_submit():
         user.username = form.username.data
-        user.password = form.password.data
+        if form.password.data:
+            user.password = form.password.data
         user.role = User.Role(form.role.data)
         user.save()
 

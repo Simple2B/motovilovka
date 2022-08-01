@@ -49,6 +49,44 @@ def test_register(client: FlaskClient):
     assert user.accounts
 
 
+def test_reset_password(client: FlaskClient):
+    from config import BaseConfig as CFG
+
+    EMAIL = CFG.ADMIN_EMAIL
+    with mail.record_messages() as outbox:
+        response = client.post(
+            "/reset_password",
+            data=dict(email=EMAIL),
+            follow_redirects=True,
+        )
+        assert (
+            b"Password reset successful. For set new password please check your e-mail"
+            in response.data
+        )
+        # check email
+        assert len(outbox) == 1
+        letter = outbox[0]
+        assert letter.subject == "Reset password"
+        user: User = User.query.filter(User.email == EMAIL).first()
+        assert user
+        assert user.reset_password_uid
+        PASS_URL = f"/password/{user.reset_password_uid}"
+        assert PASS_URL in letter.html
+        response = client.post(
+            PASS_URL,
+            data=dict(
+                password="password",
+                password_confirmation="password",
+            ),
+            follow_redirects=True,
+        )
+        assert b"Login successful." in response.data
+
+    user: User = User.query.filter_by(email=EMAIL).first()
+    assert user
+    assert user.accounts
+
+
 def test_login_and_logout(client):
     # Access to logout view before login should fail.
     response = logout(client)

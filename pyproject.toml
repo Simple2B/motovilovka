@@ -23,6 +23,7 @@ Flask-Mail = "^0.9.1"
 email-validator = "^1.2.1"
 Werkzeug = "2.0.0"
 jinja2 = "3.0.3"
+gunicorn = "^20.1.0"
 
 
 [tool.poetry.dev-dependencies]
