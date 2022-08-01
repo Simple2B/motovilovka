@@ -11,11 +11,12 @@
       <tbody class="device-dashboard">
         {% for device in devices.items%}
         {% if device.type not in device_known_types %}
-        <td>{{ device.alias if device.alias else device.name }}</td>
+        <td class="device-name" name="{{ device.name }}">{{ device.alias if device.alias else device.name }}</td>
         {% else %}
         <td>
           <!-- prettier-ignore -->
-          <a href="{{url_for('devices.device_page', device_uid=device.uid)}}">
+          <a class="device-name" name="{{ device.name }}"
+            href="{{url_for('devices.device_page', device_uid=device.uid)}}">
             {{ device.alias if device.alias else device.name }}
           </a>
         </td>
@@ -25,8 +26,6 @@
             <span data-feather="edit"></span>
           </a>
         </td>
-        <td>Edit button</td>
-        <!-- <td class="indicator">&#128246</td> -->
         <td class="emoji-icon">&#128246;</td>
         </tr>
         {% endfor %}

@@ -48,9 +48,9 @@ document.addEventListener("DOMContentLoaded", (evt) => {
   const devicesHTML = document.querySelector('.device-dashboard').children;
 
   for (let deviceColumn of devicesHTML) {
-    const accountLogin = deviceColumn.getAttribute('class').substring("account-".length);
     const deviceName = deviceColumn.querySelector('.device-name').getAttribute('name');
     const indicatorIcon = deviceColumn.querySelector('.emoji-icon');
+
 
     globalDeviceListener.addTopicListener([deviceName, 'LWT'].join('/'), (msg) => {
       const messageText = msg.toString().toLowerCase();
