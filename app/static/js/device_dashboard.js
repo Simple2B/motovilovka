@@ -131,6 +131,7 @@ document.addEventListener("DOMContentLoaded", async (evt) => {
     const indicatorHTML = deviceColumn.querySelector('.indicator');
     const offlineSVG = indicatorHTML.querySelector('.device-off');
     const onlineSVG = indicatorHTML.querySelector('.device-on');
+    const unknowSVG = indicatorHTML.querySelector('.device-unknow')
 
 
     globalDeviceListener.addTopicListener({
@@ -139,6 +140,7 @@ document.addEventListener("DOMContentLoaded", async (evt) => {
       name: deviceName,
     }, 'LWT', (msg) => {
       msg = msg.toLowerCase();
+      unknowSVG.setAttribute('hidden', true);
 
       if(msg === 'offline'){
         onlineSVG.setAttribute('hidden', true);

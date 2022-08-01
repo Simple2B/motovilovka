@@ -5,19 +5,11 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "debug",
-            "type": "python",
+            "name": "Launch Chrome",
             "request": "launch",
-            "module": "flask",
-            "env": {
-                "FLASK_APP": "wsgi:app",
-                "FLASK_ENV": "development",
-                "FLASK_DEBUG": "1"
-            },
-            "args": [
-                "run"
-            ],
-            "jinja": true
+            "type": "chrome",
+            "url": "http://localhost:7080",
+            "webRoot": "${workspaceFolder}/app"
         },
         {
             "name": "Flask run",
