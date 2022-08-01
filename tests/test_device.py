@@ -89,7 +89,7 @@ def test_show_devices(mqtt: MqttTestClient):
             device_name = TEST_DEVICE_NAME.format(i=device_i)
             html_text = res.data.decode()
             assert device_name in html_text
-            assert TEST_DEVICE_TYPE in html_text
+            assert TEST_DEVICE_NAME.format(i=device_i) in html_text
         logout(http)
 
     # Be sure user does not see not him devices

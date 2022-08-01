@@ -12,25 +12,19 @@
   </div>
   <div class="table-responsive">
     <table class="table table-striped table-sm">
-      <thead>
-        <tr>
-          <th scope="col">Id</th>
-          <th scope="col">Name</th>
-          <th scope="col">Type</th>
-        </tr>
-      </thead>
       <tbody class="device-dashboard">
         {% for device in devices.items%}
-        <tr id="{{device.id}}">
-          <td>{{ device.id }}</td>
-          <td>{{ device.name }}</td>
+        < id="{{device.id}}">
           {% if device.type not in device_known_types %}
-          <td>{{ device.type }}</td>
+          <td>{{ device.alias if device.alias else device.name }}</td>
           {% else %}
           <td>
             <!-- prettier-ignore -->
-            <a href="{{url_for('devices.device_page', device_uid=device.uid)}}">{{ device.type }}</a>
+            <a href="{{url_for('devices.device_page', device_uid=device.uid)}}">
+              {{ device.alias if device.alias else device.name }}
+            </a>
           </td>
+          <td><span data-feather="edit"></span></td>
           {% endif %}
         </tr>
         {% endfor %}
