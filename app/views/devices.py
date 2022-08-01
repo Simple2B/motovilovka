@@ -19,7 +19,7 @@ ADMIN_ROLES = User.ADMIN_ROLES
 
 @devices_blueprint.route("/devices")
 @login_required
-def devices_page_main():
+def devices_page_default():
     # get first account
     page = request.args.get("page", 1, type=int)
     query = Device.query
@@ -92,17 +92,17 @@ def device_page(device_uid: str):
     device: Device = Device.query.filter_by(uid=device_uid).first()
     if not device:
         log(log.ERROR, "Device [%s] not found", device_uid)
-        return redirect(url_for("devices.devices_page_main"))
+        return redirect(url_for("devices.devices_page_default"))
 
     if device.account.user.id != current_user.id:
         log(log.ERROR, "Access denied to device [%s]", device_uid)
-        return redirect(url_for("devices.devices_page_main"))
+        return redirect(url_for("devices.devices_page_default"))
 
     # Get template HTML name from device type
     template_path = current_app.config["DEVICE_TYPE_TEMPLATE_MAP"].get(device.type)
     if not template_path:
         log(log.WARNING, "Unknown device type [%s]", device.type)
-        return redirect(url_for("devices.devices_page_main"))
+        return redirect(url_for("devices.devices_page_default"))
 
     return render_template(
         template_path,
@@ -130,7 +130,7 @@ def device_edit(device_uid: str):
     if form.validate_on_submit():
         device.alias = form.name.data
         device.save()
-        return redirect(url_for("devices.devices_page"))
+        return redirect(url_for("devices.devices_page_default"))
     elif form.is_submitted():
         # form validation felt
         log(log.WARNING, "Edit device errors: [%s]", form.errors)

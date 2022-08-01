@@ -19,6 +19,7 @@
             {{ device.alias if device.alias else device.name }}
           </a>
         </td>
+        {% endif %}
         <td>
           <a href="{{url_for('devices.device_edit', device_uid=device.uid)}}">
             <span data-feather="edit"></span>
@@ -53,9 +54,10 @@
       {% for page_num in devices.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=3) %}
       {% if page_num %}
       {% if devices.page == page_num %}
-      <a class="page_button btn btn-dark mb-4 mx-1" href="{{ url_for('devices.devices_page_main') }}">{{ page_num }}</a>
+      <a class="page_button btn btn-dark mb-4 mx-1" href="{{ url_for('devices.devices_page_default') }}">{{ page_num
+        }}</a>
       {% else %}
-      <a class="page_button btn btn-outline-dark mb-4 mx-1" href="{{ url_for('devices.devices_page_main') }}">{{
+      <a class="page_button btn btn-outline-dark mb-4 mx-1" href="{{ url_for('devices.devices_page_default') }}">{{
         page_num }}</a>
       {% endif %}
       <!-- prettier-ignore -->
