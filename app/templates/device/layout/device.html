@@ -1,7 +1,11 @@
 <!-- prettier-ignore -->
 {% extends "device/layout/base.html" %}
 {% block body %}
-<h2 class="display-6">{{device.alias if device.alias else device.name}}</h2>
+<h2 class="display-6">
+  <a href="{{url_for('devices.device_edit', device_uid=device.uid)}}">
+    {{device.alias if device.alias else device.name}}
+  </a>
+</h2>
 <script>
   const mqttData = {
     login: "{{ device.account.mqtt_login }}",
