@@ -1,11 +1,20 @@
-from flask import current_app, redirect, render_template, Blueprint, request, url_for
+from flask import (
+    current_app,
+    redirect,
+    render_template,
+    Blueprint,
+    request,
+    url_for,
+    flash,
+)
 from flask_login import login_required, current_user
 from app.models import Device, User, Account
+from app.forms import DeviceEditForm
 from app.logger import log
 
 devices_blueprint = Blueprint("devices", __name__)
 
-ADMIN_ROLES = (User.Role.admin,)
+ADMIN_ROLES = User.ADMIN_ROLES
 
 
 @devices_blueprint.route("/devices")
@@ -70,3 +79,29 @@ def device_page(device_uid: str):
         device=device,
         mqtt_port=current_app.config["MOSQUITTO_EXTERNAL_WS_PORT"],
     )
+
+
+@devices_blueprint.route("/device_edit/<device_uid>", methods=["POST", "GET"])
+@login_required
+def device_edit(device_uid: str):
+    user: User = current_user
+    device: Device = Device.query.filter_by(uid=device_uid).first()
+    if not device:
+        log(log.ERROR, "Unknown device:[%s]", device_uid)
+        flash("Wrong device id.", "danger")
+        return redirect(url_for("devices.devices_page"))
+    if current_user.role not in ADMIN_ROLES and device.account.user_id != user.id:
+        log(log.ERROR, "Access Denied to device:%d by user:%d", device.id, user.id)
+        flash("Access Denied.", "danger")
+        return redirect(url_for("devices.devices_page"))
+
+    name = device.alias if device.alias else device.name
+    form: DeviceEditForm = DeviceEditForm(name=name, uid=device_uid)
+    if form.validate_on_submit():
+        device.alias = form.name.data
+        device.save()
+        return redirect(url_for("devices.devices_page"))
+    elif form.is_submitted():
+        # form validation felt
+        log(log.WARNING, "Edit device errors: [%s]", form.errors)
+    return render_template("device_edit.html", form=form, uid=device.uid)

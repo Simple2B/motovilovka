@@ -5,6 +5,7 @@
 />
 {% endblock %} {% block content %}
 <main class="form-login">
+  <!-- LOGIN-PAGE -->
   <form action="{{ url_for('login.login') }}" method="post">
     {{ form.hidden_tag() }}
 

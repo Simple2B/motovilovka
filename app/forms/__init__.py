@@ -5,3 +5,4 @@ from .user_update_form import UserUpdateForm
 from .registration import RegistrationForm
 from .password_reset import PasswordResetForm
 from .forgot_password import ForgotPasswordForm
+from .device_edit_form import DeviceEditForm

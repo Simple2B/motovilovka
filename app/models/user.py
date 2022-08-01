@@ -31,6 +31,8 @@ class User(db.Model, UserMixin, ModelMixin):
         admin = 1
         client = 2
 
+    ADMIN_ROLES = (Role.admin,)
+
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), unique=True, nullable=False)
     email = db.Column(db.String(256), unique=True, nullable=False)

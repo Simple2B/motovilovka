@@ -20,6 +20,7 @@ class Device(db.Model, ModelMixin):
     created_at = db.Column(db.DateTime, default=datetime.now)
     deleted = db.Column(db.Boolean, default=False)
     uid = db.Column(db.String(64), default=gen_device_uid)
+    alias = db.Column(db.String(128), nullable=True)
 
     account = relationship("Account")
 
