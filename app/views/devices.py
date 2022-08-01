@@ -1,4 +1,12 @@
-from flask import current_app, redirect, render_template, Blueprint, request, url_for
+from flask import (
+    current_app,
+    redirect,
+    render_template,
+    Blueprint,
+    request,
+    url_for,
+    flash,
+)
 from flask_login import login_required, current_user
 from app.models import Device, User, Account
 from app.logger import log
@@ -10,7 +18,8 @@ ADMIN_ROLES = (User.Role.admin,)
 
 @devices_blueprint.route("/devices")
 @login_required
-def devices_page():
+def devices_page_main():
+    # get first account
     page = request.args.get("page", 1, type=int)
     query = Device.query
     if current_user.role not in ADMIN_ROLES:
@@ -21,9 +30,36 @@ def devices_page():
 
     return render_template(
         "devices.html",
+        account=account,
         devices=devices,
-        accounts=current_user.accounts,
-        mqtt_port=current_app.config["MOSQUITTO_EXTERNAL_WS_PORT"],
+        mqtt_url=current_app.config["MQTT_WS_URL"],
+        device_known_types=current_app.config["DEVICE_TYPE_TEMPLATE_MAP"],
+    )
+
+
+@devices_blueprint.route("/devices/<account_uid>")
+@login_required
+def devices_page(account_uid: str):
+    page = request.args.get("page", 1, type=int)
+    account: Account = Account.query.filter_by(uid=account_uid).first()
+
+    if not account:
+        log(log.ERROR, "Account not found %s", account.uid)
+        return redirect(url_for("accounts.accounts_page"))
+
+    if current_user.role not in ADMIN_ROLES and account.user_id != current_user.id:
+        log(log.ERROR, "Access denied for user %s to %s", current_user, account)
+        flash(f"Access denied to device {account_uid}.", "danger")
+        return redirect(url_for("accounts.accounts_page"))
+
+    query = Device.query.filter_by(account_id=account.id)
+    devices = query.paginate(page=page, per_page=current_app.config["PAGE_SIZE"])
+
+    return render_template(
+        "devices.html",
+        devices=devices,
+        account=account,
+        mqtt_url=current_app.config["MQTT_WS_URL"],
         device_known_types=current_app.config["DEVICE_TYPE_TEMPLATE_MAP"],
     )
 
@@ -55,20 +91,20 @@ def device_page(device_uid: str):
     device: Device = Device.query.filter_by(uid=device_uid).first()
     if not device:
         log(log.ERROR, "Device [%s] not found", device_uid)
-        return redirect(url_for("devices.devices_page"))
+        return redirect(url_for("devices.devices_page_main"))
 
     if device.account.user.id != current_user.id:
         log(log.ERROR, "Access denied to device [%s]", device_uid)
-        return redirect(url_for("devices.devices_page"))
+        return redirect(url_for("devices.devices_page_main"))
 
     # Get template HTML name from device type
     template_path = current_app.config["DEVICE_TYPE_TEMPLATE_MAP"].get(device.type)
     if not template_path:
         log(log.WARNING, "Unknown device type [%s]", device.type)
-        return redirect(url_for("devices.devices_page"))
+        return redirect(url_for("devices.devices_page_main"))
 
     return render_template(
         template_path,
         device=device,
-        mqtt_port=current_app.config["MOSQUITTO_EXTERNAL_WS_PORT"],
+        mqtt_url=current_app.config["MQTT_WS_URL"],
     )

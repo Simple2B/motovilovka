@@ -1,4 +1,8 @@
 /* custom css */
+@font-face {
+  font-family: "emodji-fonts";
+  src: url("../fonts/EmojiSymbols-Regular.woff") format('woff');
+}
 
 body {
   font-size: 0.875rem;
@@ -183,4 +187,16 @@ body {
   #sign_out {
     width: 100px;
   }
+}
+
+.emoji-icon {
+  font-family: 'emodji-fonts';
+}
+
+.device-connected {
+  color: green !important;
+}
+
+.device-disconnected {
+  color: red !important;
 }

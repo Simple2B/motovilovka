@@ -13,4 +13,4 @@ def index():
     if current_user.role in ADMIN_ROLES:
         return redirect(url_for("users.users_page"))
     else:
-        return redirect(url_for("devices.devices_page"))
+        return redirect(url_for("accounts.accounts_page"))

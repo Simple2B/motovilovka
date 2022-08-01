@@ -83,13 +83,13 @@ def test_show_devices(mqtt: MqttTestClient):
     # login user by user and show
     for user in users:
         login(http, user.username, TEST_PASSWORD)
-        res = http.get("/devices")
-        assert res.status_code == 200
-        for device_i in range(TEST_DEVICE_COUNT):
-            device_name = TEST_DEVICE_NAME.format(i=device_i)
-            html_text = res.data.decode()
-            assert device_name in html_text
-            assert TEST_DEVICE_TYPE in html_text
+        for account in user.accounts:
+            res = http.get(f"/devices/{account.uid}")
+            assert res.status_code == 200
+            for device_i in range(TEST_DEVICE_COUNT):
+                device_name = TEST_DEVICE_NAME.format(i=device_i)
+                html_text = res.data.decode()
+                assert device_name in html_text
         logout(http)
 
     # Be sure user does not see not him devices

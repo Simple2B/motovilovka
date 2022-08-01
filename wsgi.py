@@ -75,7 +75,7 @@ def write_topic(topic: str, value: int):
     from app.models import Account
 
     log(log.INFO, "Write [%s]:[%s]", topic, value)
-    account: Account = Account.query.all()[-1]
+    account: Account = Account.query.first()
     client = MqttClient(client_id="shell", account=account)
     payload = json.dumps(dict(value=value), indent=2).encode()
     log(log.INFO, "Payload [%s]", payload)

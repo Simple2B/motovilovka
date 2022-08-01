@@ -1,7 +1,12 @@
 from datetime import datetime
+from uuid import uuid4
 from sqlalchemy.orm import relationship
 from app import db
 from app.models.utils import ModelMixin
+
+
+def generate_uid() -> str:
+    return str(uuid4())
 
 
 class Account(db.Model, ModelMixin):
@@ -14,6 +19,7 @@ class Account(db.Model, ModelMixin):
     mqtt_password = db.Column(db.String(16), unique=True, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now)
     deleted = db.Column(db.Boolean, default=False)
+    uid = db.Column(db.String(64), default=generate_uid)
 
     user = relationship("User")
     devices = relationship("Device", lazy="dynamic", cascade="all,delete")
