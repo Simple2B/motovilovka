@@ -8,7 +8,7 @@ from flask import (
     flash,
 )
 from flask_login import login_required, current_user
-from app.models import Device, User, Account, SubDevice
+from app.models import Device, User, SubDevice
 from app.forms import SubDeviceEditForm
 from app.logger import log
 
