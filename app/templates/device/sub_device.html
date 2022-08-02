@@ -1,0 +1,37 @@
+{% extends "device/layout/device.html" %} {% block device %}
+<br />
+<h3 class="display-6">
+  <a href="{{url_for('sub_devices.sub_device_edit', sub_uid=sub_device.uid)}}">
+    {{sub_device.alias if sub_device.alias else sub_device.name}}
+  </a>
+</h3>
+<table class="table">
+  <tbody>
+    <tr>
+      <th scope="row">Battery level</th>
+      <td id="battery">-</td>
+    </tr>
+    <tr>
+      <th scope="row">Temperature</th>
+      <td id="temperature">-</td>
+    </tr>
+    <tr>
+      <th scope="row">Temperature BME</th>
+      <td id="temperature_bme">-</td>
+    </tr>
+    <tr>
+      <th scope="row">Temperature DS</th>
+      <td id="temperature_ds">-</td>
+    </tr>
+    <tr>
+      <th scope="row">Humidity</th>
+      <td id="humidity">-</td>
+    </tr>
+  </tbody>
+</table>
+
+<script src="{{ url_for('static', filename='js/device/sub_device.js') }}"></script>
+<script>
+  const subDeviceName = "{{sub_device.name}}";
+</script>
+{% endblock %}
