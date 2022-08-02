@@ -26,6 +26,8 @@ def devices_page_default():
     if current_user.role not in ADMIN_ROLES:
         account: Account = Account.query.filter_by(user_id=current_user.id).first()
         query = query.filter_by(account_id=account.id)
+    else:
+        account: Account = Account.query.get(1)
 
     devices = query.paginate(page=page, per_page=current_app.config["PAGE_SIZE"])
 
@@ -94,7 +96,10 @@ def device_page(device_uid: str):
         log(log.ERROR, "Device [%s] not found", device_uid)
         return redirect(url_for("devices.devices_page_default"))
 
-    if device.account.user.id != current_user.id:
+    if (
+        current_user.role not in ADMIN_ROLES
+        and device.account.user.id != current_user.id
+    ):
         log(log.ERROR, "Access denied to device [%s]", device_uid)
         return redirect(url_for("devices.devices_page_default"))
 
