@@ -22,7 +22,7 @@ class Account(db.Model, ModelMixin):
     uid = db.Column(db.String(64), default=generate_uid)
 
     user = relationship("User")
-    devices = relationship("Device", lazy="dynamic", cascade="all,delete")
+    devices = relationship("Device", viewonly=True)
 
     def __repr__(self):
         return f"<{self.id}:{self.mqtt_login} u:{self.user.username}, created:{self.created_at}"
