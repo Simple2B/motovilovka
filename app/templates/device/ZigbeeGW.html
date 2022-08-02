@@ -1,0 +1,24 @@
+{% extends "device/layout/device.html" %} {% block device %}
+<table class="table">
+  <tbody>
+    <tr>
+      <th scope="row"></th>
+      <td id="onlineStatus">-</td>
+    </tr>
+    <tr>
+      <th scope="row">Bridge</th>
+      <td id="bridge-state">-</td>
+    </tr>
+    <!-- <tr>
+      <th scope="row">Humidity</th>
+      <td id="humidity">-</td>
+    </tr>
+    <tr>
+      <th scope="row">Motion State</th>
+      <td id="motionState">-</td>
+    </tr> -->
+  </tbody>
+</table>
+
+<script src="{{ url_for('static', filename='js/device/ZigbeeGW.js') }}"></script>
+{% endblock %}
