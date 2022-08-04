@@ -6,3 +6,4 @@ from .registration import RegistrationForm
 from .password_reset import PasswordResetForm
 from .forgot_password import ForgotPasswordForm
 from .device_edit_form import DeviceEditForm
+from .sub_device_edit_form import SubDeviceEditForm

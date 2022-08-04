@@ -47,7 +47,7 @@ def devices_page(account_uid: str):
     account: Account = Account.query.filter_by(uid=account_uid).first()
 
     if not account:
-        log(log.ERROR, "Account not found %s", account.uid)
+        log(log.ERROR, "Account not found %s", account_uid)
         return redirect(url_for("accounts.accounts_page"))
 
     if current_user.role not in ADMIN_ROLES and account.user_id != current_user.id:
@@ -124,11 +124,11 @@ def device_edit(device_uid: str):
     if not device:
         log(log.ERROR, "Unknown device:[%s]", device_uid)
         flash("Wrong device id.", "danger")
-        return redirect(url_for("devices.devices_page"))
+        return redirect(url_for("devices.devices_page_default"))
     if current_user.role not in ADMIN_ROLES and device.account.user_id != user.id:
         log(log.ERROR, "Access Denied to device:%d by user:%d", device.id, user.id)
         flash("Access Denied.", "danger")
-        return redirect(url_for("devices.devices_page"))
+        return redirect(url_for("devices.devices_page_default"))
 
     name = device.alias if device.alias else device.name
     form: DeviceEditForm = DeviceEditForm(name=name, uid=device_uid)

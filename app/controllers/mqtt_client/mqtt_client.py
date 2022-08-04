@@ -3,7 +3,10 @@ from uuid import uuid4
 from paho.mqtt import client as mqtt
 from paho.mqtt.client import MQTTMessage
 from app.logger import log
-from app.models import Device, Account
+from app.models import Device, Account, SubDevice
+
+
+BRIDGE_ITEMS = ("bridge",)
 
 
 class MqttClient:
@@ -57,9 +60,10 @@ class MqttClient:
         # Get device data
         # TODO critical code! Need to optimize. Make device data getting in topic length check "code above"
         # TODO best way limit topics subpath on MQTT broker layer
-        device_user, device_type, device_name = message.topic.split("/")[:3]
-        for topic_path in (device_type, device_name):
-            if not topic_path:
+        topic_path = message.topic.split("/")
+        device_user, device_type, device_name = topic_path[:3]
+        for topic_part in (device_type, device_name):
+            if not topic_part:
                 MqttClient.handle_error("Invalid topic name", message)
                 return
 
@@ -85,6 +89,8 @@ class MqttClient:
             device = Device(account_id=account.id, type=device_type, name=device_name)
             device.save()
             log(log.INFO, "New device created: %s", device)
+        else:
+            MqttClient.process_bridge_device(device, topic_path)
 
         MqttClient.on_device_message(device, message)
 
@@ -114,3 +120,28 @@ class MqttClient:
 
     def publish(self, topic, payload=None, qos=0, retain=False, properties=None):
         return self.client.publish(topic, payload, qos, retain, properties)
+
+    @staticmethod
+    def process_bridge_device(device: Device, topic_path: list[str]):
+        if len(topic_path) < 4:
+            return
+        sub_item = topic_path[3]
+        if not sub_item:
+            return
+
+        if sub_item in BRIDGE_ITEMS:
+            if not device.is_bridge:
+                device.is_bridge = True
+                device.save()
+            return
+
+        if device.is_bridge:
+            sub_device = SubDevice.query.filter_by(
+                device_id=device.id,
+                name=sub_item,
+            ).first()
+            if not sub_device:
+                sub_device = SubDevice(
+                    name=sub_item,
+                    device_id=device.id,
+                ).save()

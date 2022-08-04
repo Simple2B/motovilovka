@@ -54,6 +54,7 @@ class BaseConfig(object):
     DEVICE_TYPE_TEMPLATE_MAP = {
         "test_lamp": "device/test_lamp.html",
         "ES-W-RTHM": "device/ES-W-RTHM.html",
+        "ZigbeeGW": "device/ZigbeeGW.html",
     }
 
     @staticmethod

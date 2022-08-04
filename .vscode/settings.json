@@ -16,16 +16,19 @@
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,
     "cSpell.words": [
+        "devel",
         "dotenv",
         "MOSQUITTO",
         "Motovilovka",
         "mqtt",
         "paho",
+        "RTHM",
         "sqlalchemy",
         "userdata",
         "viewonly",
         "virtualenvs",
         "werkzeug",
-        "wtforms"
+        "wtforms",
+        "Zigbee"
     ]
 }
